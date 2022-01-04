@@ -1,0 +1,16 @@
+version: "3.9"
+services:
+  fed_the_dog_server:
+    container_name: fed_the_dog_server
+    build:
+      context: .
+      dockerfile: server.Dockerfile
+    image: php:7.4-apache
+    # depends_on:
+    #   - fed-the-dog-db
+    volumes:
+      - ../server:/var/www/html
+      - /demo.apache.conf:/etc/apache2/sites-enabled/demo.conf
+      # - ./Config.php:/var/www/html/src/config/Config.php
+    ports:
+      - 8000:80
