@@ -1,6 +1,7 @@
 {
     "name": "aloefflerj/yet-another-controller",
     "description": "This is basically a http request and response controller using as much PSR's as it can (or just an excuse for personal study)",
+    "license": "mit",
     "autoload": {
         "psr-4": {
             "Aloefflerj\\YetAnotherController\\": "src/"
