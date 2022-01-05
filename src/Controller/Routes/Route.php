@@ -62,7 +62,7 @@ class Route
 
             $urlParamsQty = count($urlParams);
 
-            if (substr_count($currentUri, "/") - 1 !== $urlParamsQty) {
+            if (substr_count($this->name, "{") !== $urlParamsQty) {
                 return null;
             }
 
