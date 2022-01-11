@@ -52,7 +52,7 @@ class BaseController
      *
      * @param string $uri
      * @param \closure $output
-     * @param array|null $params
+     * @param array|null $functionParams
      * @return BaseController
      */
     public function get(string $uri, \closure $output, ?array $functionParams = null): BaseController
@@ -142,7 +142,7 @@ class BaseController
     /**
      * Get the current route that is beeing accessed
      *
-     * @return void
+     * @return string
      */
     private function getCurrentRouteName(): ?string
     {

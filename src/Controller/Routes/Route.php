@@ -9,20 +9,21 @@ class Route
     public $name;
     public $output;
     public $verb;
-    public $verbParams;
+    public $headerParams;
     public $functionParams;
     public static $urlHandler;
 
     /**
      * @param string $uri
      * @param \closure $output
+     * @param \closure $urlParams
      * @param array|null $functionParams
      */
     protected function __construct(string $uri, \closure $output, ?array $functionParams) {
         
         $this->name             = $uri;
         $this->output           = $output;
-        $this->functionParams   = $functionParams;
+        $this->functionParams   = (object)$functionParams;
 
         self::$urlHandler       = new UrlHandler();
 
@@ -33,9 +34,9 @@ class Route
         $uri = self::$urlHandler->getUriPath();
         
         //Get the route params
-        $callBackParams = $this->getParams($uri);
+        $callBackUrlParams = $this->getUrlParams($uri);
 
-        if ($callBackParams === null) {
+        if ($callBackUrlParams === null) {
             $this->error = new \Exception("Error 404", 404);
             return $this;
         }
@@ -44,21 +45,20 @@ class Route
         $output = $this->output;
         
         if($this->verb === 'get') {
-            $output('', '', $callBackParams);
+            $output('', '', $callBackUrlParams, $this->functionParams);
             return $this;
         }
 
-        $output('', '', $this->body, $callBackParams);
+        $output('', '', $this->body, $callBackUrlParams, $this->functionParams);
 
         return $this;
     }
 
-    protected function getParams($currentUri, ?bool $overwriteArrayParams = false)
+    protected function getUrlParams($currentUri)
     {
-        $urlParams = $this->verbParams;
-        $params = $this->functionParams;
+        $urlParams = $this->headerParams;
 
-        if ($urlParams && !$params && !$overwriteArrayParams) {
+        if ($urlParams) {
 
             $urlParamsQty = count($urlParams);
 

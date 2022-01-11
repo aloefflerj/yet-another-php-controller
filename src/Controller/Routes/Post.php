@@ -9,7 +9,7 @@ class Post extends Route
         parent::__construct($uri, $output, $functionParams);
 
         $this->verb         =  parent::getVerbName(__CLASS__);
-        $this->verbParams   = $this->splitToParams($uri);
+        $this->urlParams   = $this->splitToParams($uri);
         $this->body         = file_get_contents('php://input', true); 
     }
 
@@ -34,7 +34,7 @@ class Post extends Route
     {
         $currentRoute = self::$urlHandler->routeWithUrlParams($currentUri, $routes[$currentRequestMethod]);
 
-        if (!$routes[$currentRequestMethod][$currentRoute]->verbParams) {
+        if (!$routes[$currentRequestMethod][$currentRoute]->urlParams) {
             $currentRoute = $currentUri;
         }
 

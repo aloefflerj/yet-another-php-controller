@@ -11,7 +11,7 @@ class Get extends Route
         parent::__construct($uri, $output, $functionParams);
 
         $this->verb         =  parent::getVerbName(__CLASS__);
-        $this->verbParams   = $this->splitToParams($uri);
+        $this->headerParams   = $this->splitToParams($uri);
 
         self::$urlHandler   = new UrlHandler();
     }
@@ -37,7 +37,7 @@ class Get extends Route
     {
         $currentRoute = self::$urlHandler->routeWithUrlParams($currentUri, $routes[$currentRequestMethod]);
 
-        if (!$routes[$currentRequestMethod][$currentRoute]->verbParams) {
+        if (!$routes[$currentRequestMethod][$currentRoute]->headerParams) {
             $currentRoute = $currentUri;
         }
 
