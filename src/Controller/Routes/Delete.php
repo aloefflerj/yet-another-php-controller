@@ -9,7 +9,7 @@ class Delete extends Route
         parent::__construct($uri, $output, $functionParams);
 
         $this->verb         =  parent::getVerbName(__CLASS__);
-        $this->urlParams    = $this->splitToParams($uri);
+        $this->headerParams    = $this->splitToParams($uri);
         $this->body         = file_get_contents('php://input', true); 
     }
 
@@ -17,7 +17,7 @@ class Delete extends Route
     {
         $currentRoute = self::$urlHandler->routeWithUrlParams($currentUri, $routes[$currentRequestMethod]);
 
-        if (!$routes[$currentRequestMethod][$currentRoute]->urlParams) {
+        if (!$routes[$currentRequestMethod][$currentRoute]->headerParams) {
             $currentRoute = $currentUri;
         }
 
