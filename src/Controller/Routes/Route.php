@@ -16,7 +16,6 @@ class Route
     /**
      * @param string $uri
      * @param \closure $output
-     * @param \closure $urlParams
      * @param array|null $functionParams
      */
     protected function __construct(string $uri, \closure $output, ?array $functionParams) {
