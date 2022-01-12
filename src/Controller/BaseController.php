@@ -12,33 +12,10 @@ class BaseController
 {
     use StringHelper;
     use UrlHelper;
-    /**
-     * Group all routes
-     *
-     * @var Routes $routes
-     */
+
     public Routes $routes;
-
-    /**
-     * Group random data
-     *
-     * @var array $data
-     */
     private array $data;
-
-
-    /**
-     * To deal with the url
-     *
-     * @var UrlHandler $urlHandler
-     */
     private UrlHandler $urlHandler;
-
-    /**
-     * Errors
-     *
-     * @var \Exception $error
-     */
     private \Exception $error;
 
     public function __construct()
@@ -47,18 +24,10 @@ class BaseController
         $this->routes = new Routes();
     }
 
-    /**
-     * Get http method route add
-     *
-     * @param string $uri
-     * @param \closure $output
-     * @param array|null $functionParams
-     * @return BaseController
-     */
     public function get(string $uri, \closure $output, ?array $functionParams = null): BaseController
     {
         $routes = $this->routes->get($uri, $output, $functionParams)->add();
-        if($routes->error()) {
+        if ($routes->error()) {
             $this->error = $routes->error();
         }
         return $this;
@@ -67,7 +36,7 @@ class BaseController
     public function post(string $uri, \closure $output, ?array $functionParams = null): BaseController
     {
         $routes = $this->routes->post($uri, $output, $functionParams)->add();
-        if($routes->error()) {
+        if ($routes->error()) {
             $this->error = $routes->error();
         }
         return $this;
@@ -76,7 +45,7 @@ class BaseController
     public function put(string $uri, \closure $output, ?array $functionParams = null): BaseController
     {
         $routes = $this->routes->put($uri, $output, $functionParams)->add();
-        if($routes->error()) {
+        if ($routes->error()) {
             $this->error = $routes->error();
         }
         return $this;
@@ -85,21 +54,18 @@ class BaseController
     public function delete(string $uri, \closure $output, ?array $functionParams = null): BaseController
     {
         $routes = $this->routes->delete($uri, $output, $functionParams)->add();
-        if($routes->error()) {
+        if ($routes->error()) {
             $this->error = $routes->error();
         }
         return $this;
     }
 
     /**
-     * Dispatch all the added routes
-     *
-     * @return BaseController
+     * @throws \Exception
      */
-    public function dispatch()
+    public function dispatch(): BaseController
     {
-        // Check if there is an error before dispatch
-        if($this->error()) {
+        if ($this->error()) {
             echo $this->error()->getMessage();
             die();
         }
@@ -115,20 +81,14 @@ class BaseController
         $currentRoute = $this->routes->getRouteByName($currentRouteName);
 
         $dispatch = $this->routes->dispatchRoute($currentRoute);
-        if(!$dispatch) {
+        if (!$dispatch) {
             $this->error = new \Exception("Error 405", 405);
             return $this;
         }
 
         return $this;
-
     }
 
-    /**
-     * Error handling
-     *
-     * @return \Exception|null
-     */
     public function error(): ?\Exception
     {
         return $this->error ?? null;
@@ -139,30 +99,22 @@ class BaseController
      *                          HELPER FUNCTIONS
      * ||================================================================||
      * 
-     * refactor => transform into traits
      */
 
     /**
-     * getRoutes
-     *
-     * @return array|null
+     * @return Routes[]|null
      */
-    public function getRoutes(): ?Routes
+    public function getRoutes()
     {
         return $this->routes ?? null;
     }
 
-    /**
-     * Get the current route that is beeing accessed
-     *
-     * @return string
-     */
     private function getCurrentRouteName(): ?string
     {
         $currentUri = $this->urlHandler->getUriPath();
 
         $currentRoute = $this->routes->getCurrent($currentUri);
-        
+
         return $currentRoute;
     }
 
@@ -171,12 +123,4 @@ class BaseController
         $requestMethod = $this->getRequestMethod();
         return array_key_exists($currentRoute, $this->routes->$requestMethod);
     }
-
-
-    /**
-     * ||================================================================||
-     *                          TEST FUNCTIONS
-     * ||================================================================||
-     */
-
 }

@@ -13,11 +13,6 @@ class Route
     public $functionParams;
     public static $urlHandler;
 
-    /**
-     * @param string $uri
-     * @param \closure $output
-     * @param array|null $functionParams
-     */
     protected function __construct(string $uri, \closure $output, ?array $functionParams) {
         
         $this->name             = $uri;
@@ -75,12 +70,6 @@ class Route
         return (object)$urlParamValues;
     }
 
-    /**
-     * Get the request method name
-     *
-     * @param string $method
-     * @return string
-     */
     protected function getMethodName(string $method): string
     {
         $separatedClassName = explode('\\', $method);
@@ -89,13 +78,6 @@ class Route
         return strtolower($className);
     }
 
-
-    /**
-     * Split uri params into array
-     *
-     * @param string $uri
-     * @return array|null
-     */
     protected function splitToParams(string $uri): ?array
     {
         if (strpos($uri, '{') !== false) {
