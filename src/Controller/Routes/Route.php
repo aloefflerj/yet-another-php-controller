@@ -8,7 +8,7 @@ class Route
 {
     public $name;
     public $output;
-    public $verb;
+    public $method;
     public $headerParams;
     public $functionParams;
     public static $urlHandler;
@@ -43,7 +43,7 @@ class Route
         // Get the output function
         $output = $this->output;
         
-        if($this->verb === 'get') {
+        if($this->method === 'get') {
             $output('', '', $callBackUrlParams, $this->functionParams);
             return $this;
         }
@@ -78,12 +78,12 @@ class Route
     /**
      * Get the request method name
      *
-     * @param string $verb
+     * @param string $method
      * @return string
      */
-    protected function getVerbName(string $verb): string
+    protected function getMethodName(string $method): string
     {
-        $separatedClassName = explode('\\', $verb);
+        $separatedClassName = explode('\\', $method);
         $className = end($separatedClassName);
 
         return strtolower($className);

@@ -10,7 +10,7 @@ class Get extends Route
     {
         parent::__construct($uri, $output, $functionParams);
 
-        $this->verb             =  parent::getVerbName(__CLASS__);
+        $this->method             =  parent::getMethodName(__CLASS__);
         $this->headerParams     = $this->splitToParams($uri);
 
         self::$urlHandler   = new UrlHandler();

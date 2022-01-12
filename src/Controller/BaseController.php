@@ -48,7 +48,7 @@ class BaseController
     }
 
     /**
-     * Get http verb route add
+     * Get http method route add
      *
      * @param string $uri
      * @param \closure $output

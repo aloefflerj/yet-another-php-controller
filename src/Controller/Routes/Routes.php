@@ -29,17 +29,17 @@ class Routes
     public function add(): Routes
     {
         $currentUri = self::$current->name;
-        $currentVerb = self::$current->verb;
+        $currentMethod = self::$current->method;
 
-        if (!array_key_exists($currentVerb, $this->routes)) {
-            $this->routes[$currentVerb] = [];
+        if (!array_key_exists($currentMethod, $this->routes)) {
+            $this->routes[$currentMethod] = [];
         }
 
-        if (!is_array($this->routes[$currentVerb])) {
-            $this->routes[$currentVerb] = [];
+        if (!is_array($this->routes[$currentMethod])) {
+            $this->routes[$currentMethod] = [];
         }
 
-        if (array_key_exists($currentUri, $this->routes[$currentVerb])) {
+        if (array_key_exists($currentUri, $this->routes[$currentMethod])) {
 
             $this->error = new \Exception(
                 " Error 409 => route \"{$currentUri}\" already exists => " .
@@ -53,7 +53,7 @@ class Routes
             return $this;
         }
 
-        $this->routes[$currentVerb][$currentUri] = self::$current;
+        $this->routes[$currentMethod][$currentUri] = self::$current;
 
         return $this;
     }

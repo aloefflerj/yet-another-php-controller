@@ -8,7 +8,7 @@ class Delete extends Route
     {
         parent::__construct($uri, $output, $functionParams);
 
-        $this->verb         =  parent::getVerbName(__CLASS__);
+        $this->method         =  parent::getMethodName(__CLASS__);
         $this->headerParams    = $this->splitToParams($uri);
         $this->body         = file_get_contents('php://input', true); 
     }
