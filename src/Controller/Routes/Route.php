@@ -55,6 +55,7 @@ class Route
 
     protected function getUrlParams($currentUri)
     {
+        $urlParamValues = null;
         $urlParams = $this->headerParams;
 
         if ($urlParams) {
@@ -66,12 +67,12 @@ class Route
             }
 
             $urlParamsArray = explode("/", $currentUri);
-            $params = array_slice($urlParamsArray, -$urlParamsQty);
+            $urlParamValues = array_slice($urlParamsArray, -$urlParamsQty);
 
-            $params = array_combine($urlParams, $params);
+            $urlParamValues = array_combine($urlParams, $urlParamValues);
         }
-
-        return (object)$params;
+        
+        return $urlParamValues;
     }
 
     /**
