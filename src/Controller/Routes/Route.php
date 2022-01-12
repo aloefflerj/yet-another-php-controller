@@ -71,8 +71,8 @@ class Route
 
             $urlParamValues = array_combine($urlParams, $urlParamValues);
         }
-        
-        return $urlParamValues;
+
+        return (object)$urlParamValues;
     }
 
     /**
