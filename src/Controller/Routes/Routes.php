@@ -72,6 +72,20 @@ class Routes
         return $this;
     }
 
+    public function put(string $uri, \closure $output, ?array $functionParams)
+    {
+        self::$current = new Put($uri, $output, $functionParams);
+
+        return $this;
+    }
+
+    public function delete(string $uri, \closure $output, ?array $functionParams)
+    {
+        self::$current = new Delete($uri, $output, $functionParams);
+
+        return $this;
+    }
+
     public function getCurrent($currentUri)
     {
         $currentRoute = null;
@@ -85,8 +99,14 @@ class Routes
             case 'post':
                 $currentRoute = (Post::getRoute($currentUri, $this->routes, $requestMethod));
                 break;
+            case 'put':
+                $currentRoute = (Put::getRoute($currentUri, $this->routes, $requestMethod));
+                break;
+            case 'delete':
+                $currentRoute = (Delete::getRoute($currentUri, $this->routes, $requestMethod));
+                break;
             default:
-                echo "not get";
+                throw new \Exception('This method has not been implemented', 501);
                 break;
         }
 

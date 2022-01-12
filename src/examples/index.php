@@ -73,6 +73,18 @@ $app->post('/users', function ($req, $res, $body, $params) {
     
 });
 
+$app->put('/users/{id}', function($req, $res, $body, $params) {
+    
+    echo json_encode(['id' => $params->id, 'body' => $body], JSON_PRETTY_PRINT);
+
+});
+
+$app->delete('/users/{id}', function($req, $res, $body, $params) {
+    
+    echo json_encode(['id' => $params->id], JSON_PRETTY_PRINT);
+
+});
+
 $app->get('/test', function($req, $res, $params) {
     
     $stream = new Stream(fopen('./resource.txt', 'r'));

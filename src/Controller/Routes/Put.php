@@ -2,7 +2,7 @@
 
 namespace Aloefflerj\YetAnotherController\Controller\Routes;
 
-class Post extends Route
+class Put extends Route
 {
     public function __construct(string $uri, \closure $output, ?array $functionParams)
     {

@@ -73,9 +73,22 @@ class BaseController
         return $this;
     }
 
-    public function put($body)
+    public function put(string $uri, \closure $output, ?array $functionParams = null): BaseController
     {
-        echo "<pre>", var_dump($body), "</pre>";
+        $routes = $this->routes->put($uri, $output, $functionParams)->add();
+        if($routes->error()) {
+            $this->error = $routes->error();
+        }
+        return $this;
+    }
+
+    public function delete(string $uri, \closure $output, ?array $functionParams = null): BaseController
+    {
+        $routes = $this->routes->delete($uri, $output, $functionParams)->add();
+        if($routes->error()) {
+            $this->error = $routes->error();
+        }
+        return $this;
     }
 
     /**

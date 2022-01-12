@@ -89,4 +89,22 @@ class Route
         return strtolower($className);
     }
 
+
+    /**
+     * Split uri params into array
+     *
+     * @param string $uri
+     * @return array|null
+     */
+    protected function splitToParams(string $uri): ?array
+    {
+        if (strpos($uri, '{') !== false) {
+            $headerParams = explode('{', $uri);
+            $headerParams = str_replace(['}', '/'], '', $headerParams);
+            array_shift($headerParams);
+        }
+
+        return $headerParams ?? null;
+    }
+
 }
