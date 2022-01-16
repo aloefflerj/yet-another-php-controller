@@ -2,18 +2,18 @@
 
 namespace Aloefflerj\YetAnotherController\Controller\Routes;
 
-class Put extends Route
+class Put extends Route implements RouteInterface
 {
     public function __construct(string $uri, \closure $output, ?array $functionParams)
     {
         parent::__construct($uri, $output, $functionParams);
 
         $this->method         =  parent::getMethodName(__CLASS__);
-        $this->headerParams    = $this->splitToParams($uri);
-        $this->body         = file_get_contents('php://input', true); 
+        $this->headerParams   = $this->splitToParams($uri);
+        $this->body           = file_get_contents('php://input', true); 
     }
 
-    public static function getRoute($currentUri, $routes, $currentRequestMethod)
+    public static function getRoute(string $currentUri, array $routes, string $currentRequestMethod): string
     {
         $currentRoute = self::$urlHandler->routeWithUrlParams($currentUri, $routes[$currentRequestMethod]);
 

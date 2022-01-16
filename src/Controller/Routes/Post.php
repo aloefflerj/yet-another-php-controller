@@ -2,7 +2,7 @@
 
 namespace Aloefflerj\YetAnotherController\Controller\Routes;
 
-class Post extends Route
+class Post extends Route implements RouteInterface
 {
     public function __construct(string $uri, \closure $output, ?array $functionParams)
     {
@@ -10,10 +10,10 @@ class Post extends Route
 
         $this->method         =  parent::getMethodName(__CLASS__);
         $this->headerParams   = $this->splitToParams($uri);
-        $this->body         = file_get_contents('php://input', true); 
+        $this->body           = file_get_contents('php://input', true); 
     }
 
-    public static function getRoute($currentUri, $routes, $currentRequestMethod)
+    public static function getRoute(string $currentUri, array $routes, string $currentRequestMethod): string
     {
         $currentRoute = self::$urlHandler->routeWithUrlParams($currentUri, $routes[$currentRequestMethod]);
 

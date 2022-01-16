@@ -23,7 +23,7 @@ class Route
 
     }
 
-    public function dispatch()
+    public function dispatch(): Route
     {
         $uri = self::$urlHandler->getUriPath();
         
@@ -48,7 +48,7 @@ class Route
         return $this;
     }
 
-    protected function getUrlParams($currentUri)
+    protected function getUrlParams($currentUri): \stdClass
     {
         $urlParamValues = null;
         $urlParams = $this->headerParams;
