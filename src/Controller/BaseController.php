@@ -104,7 +104,7 @@ class BaseController
     /**
      * @return Routes[]|null
      */
-    public function getRoutes()
+    public function getRoutes(): ?array
     {
         return $this->routes ?? null;
     }
