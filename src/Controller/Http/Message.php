@@ -2,10 +2,9 @@
 
 namespace Aloefflerj\YetAnotherController\Controller\Http;
 
-use Aloefflerj\YetAnotherController\Psr\Http\Message\MessageInterface;
-use Aloefflerj\YetAnotherController\Psr\Http\Message\StreamInterface;
+use Aloefflerj\YetAnotherController\Controller\PSR\MessageInterface;
+use Aloefflerj\YetAnotherController\Controller\PSR\StreamInterface;
 
-// class Message
 class Message implements MessageInterface
 {
 

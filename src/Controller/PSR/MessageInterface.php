@@ -1,6 +1,6 @@
 <?php
 
-namespace Aloefflerj\YetAnotherController\Psr\Http\Message;
+namespace Aloefflerj\YetAnotherController\Controller\PSR;
 
 /**
  * HTTP messages consist of requests from a client to a server and responses

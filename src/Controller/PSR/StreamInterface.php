@@ -1,6 +1,6 @@
 <?php
 
-namespace Aloefflerj\YetAnotherController\Psr\Http\Message;
+namespace Aloefflerj\YetAnotherController\Controller\PSR;
 
 /**
  * Describes a data stream.

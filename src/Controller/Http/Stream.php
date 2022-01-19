@@ -2,7 +2,7 @@
 
 namespace Aloefflerj\YetAnotherController\Controller\Http;
 
-use Aloefflerj\YetAnotherController\Psr\Http\Message\StreamInterface;
+use Aloefflerj\YetAnotherController\Controller\PSR\StreamInterface;
 
 class Stream implements StreamInterface
 {
@@ -21,8 +21,6 @@ class Stream implements StreamInterface
 
         $meta = $this->getMetadata();
 
-        // The mode parameter specifies the type of access you require to 
-        // the stream. @see https://www.php.net/manual/en/function.fopen.php
         if (strpos($meta['mode'], '+') !== false) {
             $this->readable = true;
             $this->writable = true;
