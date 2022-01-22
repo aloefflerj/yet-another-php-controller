@@ -10,6 +10,7 @@ class Uri
 
     private string $completeUri;
     private string $scheme;
+    private string $authority;
     
     /**
      * @throws \Exception
@@ -28,8 +29,14 @@ class Uri
         return $this->scheme;
     }
 
+    public function getAuthority(): string
+    {
+        return $this->authority;
+    }
+
     private function splitUri(): void
     {
-        $this->scheme = explode(':', $this->completeUri)[0];
+        $this->scheme       = explode(':', $this->completeUri)[0];
+        $this->authority    = explode('/', $this->completeUri)[2];
     }
 }
