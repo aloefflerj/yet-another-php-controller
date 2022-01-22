@@ -12,6 +12,7 @@ class Uri
     private string $scheme;
     private string $authority;
     private string $userInfo;
+    private string $host;
 
     /**
      * @throws \Exception
@@ -43,13 +44,19 @@ class Uri
         return $this->userInfo;
     }
 
-    # helper functions
+    public function getHost(): string
+    {
+        return $this->host;
+    }
+
+    # HELPER FUNCTIONS #
 
     private function split(): void
     {
         $this->scheme = explode(':', $this->completeUri)[0];
         $this->authority = $this->splitToAuthority();
         $this->userInfo = $this->splitToUserInfo();
+        $this->host = $this->splitToHost();
     }
 
     private function splitToAuthority(): string
@@ -70,7 +77,7 @@ class Uri
         return $authority;
     }
 
-    private function splitToUserInfo()
+    private function splitToUserInfo(): string
     {
         $userInfo = '';
         if (strpos($this->completeUri, '@')) {
@@ -78,5 +85,21 @@ class Uri
         }
 
         return $userInfo;
+    }
+
+    private function splitToHost(): string
+    {
+        $host = '';
+        $host = $this->authority;
+
+        if (strpos($host, '@')) {
+            $host = explode('@', $host)[1];
+        }
+
+        if (strpos($host, ':')) {
+            $host = explode(':', $host)[0];
+        }
+
+        return strtolower($host);
     }
 }
