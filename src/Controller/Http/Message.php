@@ -19,12 +19,16 @@ class Message implements MessageInterface
         $this->protocolVersion = '1.0';
     }
 
-    public function getProtocolVersion()
+    public function getProtocolVersion():string
     {
         return $this->protocolVersion;
     }
 
-    public function withProtocolVersion($version)
+    /**
+     * @param string $version
+     * @return static
+     */
+    public function withProtocolVersion(string $version)
     {
         $clone = clone $this;
         $clone->protocolVersion = $version;
