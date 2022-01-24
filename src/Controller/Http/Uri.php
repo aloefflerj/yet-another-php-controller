@@ -13,6 +13,7 @@ class Uri
     private string $authority;
     private string $userInfo;
     private string $host;
+    private int $port;
 
     /**
      * @throws \Exception
@@ -57,6 +58,7 @@ class Uri
         $this->authority = $this->splitToAuthority();
         $this->userInfo = $this->splitToUserInfo();
         $this->host = $this->splitToHost();
+        $this->port = $this->splitToPort();
     }
 
     private function splitToAuthority(): string
@@ -90,16 +92,31 @@ class Uri
     private function splitToHost(): string
     {
         $host = '';
-        $host = $this->authority;
+        $authority = $this->authority;
 
-        if (strpos($host, '@')) {
-            $host = explode('@', $host)[1];
+        if (strpos($authority, '@')) {
+            $host = explode('@', $authority)[1];
         }
 
-        if (strpos($host, ':')) {
-            $host = explode(':', $host)[0];
+        if (strpos($authority, ':')) {
+            $host = explode(':', $authority)[0];
         }
 
         return strtolower($host);
+    }
+
+    private function splitToPort(): ?int
+    {
+        $port = null;
+        $authority = $this->authority;
+
+        if (strpos($authority, ':') && !strpos($authority, '@')) {
+            $port = explode(':', $authority)[1];
+            if (strpos($port, '/')) {
+                $port = explode('/', $port)[0];
+            }
+        }
+
+        return $port;
     }
 }
