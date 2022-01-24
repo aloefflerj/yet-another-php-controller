@@ -13,7 +13,7 @@ class Uri
     private string $authority;
     private string $userInfo;
     private string $host;
-    private int $port;
+    private ?int $port;
 
     /**
      * @throws \Exception
@@ -48,6 +48,11 @@ class Uri
     public function getHost(): string
     {
         return $this->host;
+    }
+
+    public function getPort(): ?int
+    {
+        return $this->port;
     }
 
     # HELPER FUNCTIONS #
