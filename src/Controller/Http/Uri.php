@@ -15,6 +15,7 @@ class Uri
     private string $host;
     private ?int $port;
     private string $path;
+    private string $query;
 
     /**
      * @throws \Exception
@@ -61,16 +62,22 @@ class Uri
         return $this->path;
     }
 
+    public function getQuery(): string
+    {
+        return $this->query;
+    }
+
     # HELPER FUNCTIONS #
 
     private function split(): void
     {
-        $this->scheme = explode(':', $this->completeUri)[0];
-        $this->authority = $this->splitToAuthority();
-        $this->userInfo = $this->splitToUserInfo();
-        $this->host = $this->splitToHost();
-        $this->port = $this->splitToPort();
-        $this->path = $this->splitToPath();
+        $this->scheme       = explode(':', $this->completeUri)[0];
+        $this->authority    = $this->splitToAuthority();
+        $this->userInfo     = $this->splitToUserInfo();
+        $this->host         = $this->splitToHost();
+        $this->port         = $this->splitToPort();
+        $this->path         = $this->splitToPath();
+        $this->query        = $this->splitToQuery();
     }
 
     private function splitToAuthority(): string
@@ -137,5 +144,20 @@ class Uri
         $path = explode('/', $this->completeUri)[3];
         $path = "/{$path}/";
         return $path;
+    }
+
+    private function splitToQuery(): string
+    {
+        $uri = $this->completeUri;
+        if(!strpos($uri, '?')) {
+            return '';
+        }
+        
+        if(strpos($uri, '#')) {
+            $uri = explode('#', $uri)[0];
+        }
+
+        $query = explode('?', $uri)[1];
+        return $query;
     }
 }
