@@ -154,8 +154,14 @@ class Uri
 
     private function splitToPath(): string
     {
-        $path = explode('/', $this->completeUri)[3];
-        $path = "/{$path}/";
+        $pathArr = explode('/', $this->completeUri);
+        $pathArr = array_slice($pathArr, 3);
+        $path = '/' . implode('/', $pathArr);
+        
+        if(strpos($path, '?')) {
+            $path = explode('?', $path)[0];
+        }
+        
         return $path;
     }
 
@@ -187,11 +193,10 @@ class Uri
     {
         $scheme     = $this->getScheme() ?? '';
         $authority  = $this->getAuthority() ?? '';
-        $userInfo   = $this->getUserInfo() ?? '';
         $path       = $this->getPath() ?? '';
-        $query      = $this->getQuery() ?? '';
-        $fragment   = $this->getFragment() ?? '';
+        $query      = $this->getQuery() ? "?{$this->getQuery()}" : '';
+        $fragment   = $this->getFragment() ? "#{$this->getFragment()}" : '';
 
-        return "{$scheme}//{$authority}{$userInfo}{$path}{$query}{$fragment}";
+        return "{$scheme}//{$authority}{$path}{$query}{$fragment}";
     }
 }
