@@ -33,6 +33,11 @@ class Uri
         $this->split();
     }
 
+    public function __toString()
+    {
+        return $this->glueElements();
+    }
+
     public function getScheme(): string
     {
         return $this->scheme;
@@ -85,6 +90,7 @@ class Uri
         $this->path         = $this->splitToPath();
         $this->query        = $this->splitToQuery();
         $this->fragment     = $this->splitToFragment();
+        $this->completeUri  = $this->glueElements();
     }
 
     private function splitToAuthority(): string
@@ -175,5 +181,17 @@ class Uri
         }
 
         return explode('#', $this->completeUri)[1];
+    }
+
+    private function glueElements(): string
+    {
+        $scheme     = $this->getScheme() ?? '';
+        $authority  = $this->getAuthority() ?? '';
+        $userInfo   = $this->getUserInfo() ?? '';
+        $path       = $this->getPath() ?? '';
+        $query      = $this->getQuery() ?? '';
+        $fragment   = $this->getFragment() ?? '';
+
+        return "{$scheme}//{$authority}{$userInfo}{$path}{$query}{$fragment}";
     }
 }
