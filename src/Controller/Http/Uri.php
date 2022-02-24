@@ -16,6 +16,7 @@ class Uri
     private ?int $port;
     private string $path;
     private string $query;
+    private string $fragment;
 
     /**
      * @throws \Exception
@@ -67,6 +68,11 @@ class Uri
         return $this->query;
     }
 
+    public function getFragment(): string
+    {
+        return $this->fragment;
+    }
+
     # HELPER FUNCTIONS #
 
     private function split(): void
@@ -78,6 +84,7 @@ class Uri
         $this->port         = $this->splitToPort();
         $this->path         = $this->splitToPath();
         $this->query        = $this->splitToQuery();
+        $this->fragment     = $this->splitToFragment();
     }
 
     private function splitToAuthority(): string
@@ -149,15 +156,24 @@ class Uri
     private function splitToQuery(): string
     {
         $uri = $this->completeUri;
-        if(!strpos($uri, '?')) {
+        if (!strpos($uri, '?')) {
             return '';
         }
-        
-        if(strpos($uri, '#')) {
+
+        if (strpos($uri, '#')) {
             $uri = explode('#', $uri)[0];
         }
 
         $query = explode('?', $uri)[1];
         return $query;
+    }
+
+    private function splitToFragment(): string
+    {
+        if (!strpos($this->completeUri, '#')) {
+            return '';
+        }
+
+        return explode('#', $this->completeUri)[1];
     }
 }
