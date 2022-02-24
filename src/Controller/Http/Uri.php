@@ -14,6 +14,7 @@ class Uri
     private string $userInfo;
     private string $host;
     private ?int $port;
+    private string $path;
 
     /**
      * @throws \Exception
@@ -55,6 +56,11 @@ class Uri
         return $this->port;
     }
 
+    public function getPath(): string
+    {
+        return $this->path;
+    }
+
     # HELPER FUNCTIONS #
 
     private function split(): void
@@ -64,6 +70,7 @@ class Uri
         $this->userInfo = $this->splitToUserInfo();
         $this->host = $this->splitToHost();
         $this->port = $this->splitToPort();
+        $this->path = $this->splitToPath();
     }
 
     private function splitToAuthority(): string
@@ -123,5 +130,12 @@ class Uri
         }
 
         return $port;
+    }
+
+    private function splitToPath(): string
+    {
+        $path = explode('/', $this->completeUri)[3];
+        $path = "/{$path}/";
+        return $path;
     }
 }
