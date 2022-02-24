@@ -7,6 +7,7 @@ use Aloefflerj\YetAnotherController\Controller\PSR\UriInterface;
 class Uri
 // class Uri implements UriInterface
 {
+    use Schemes;
 
     private string $completeUri;
     private string $scheme;
@@ -41,6 +42,18 @@ class Uri
     public function getScheme(): string
     {
         return $this->scheme;
+    }
+
+    public function withScheme(string $scheme): self
+    {
+        if(!in_array($scheme, $this->getValidSchemes())) {
+            throw new \InvalidArgumentException('This scheme is not valid');
+        }
+        
+        $clone = clone $this;
+        $clone->scheme = $scheme;
+        
+        return $clone;
     }
 
     public function getAuthority(): string
@@ -157,11 +170,11 @@ class Uri
         $pathArr = explode('/', $this->completeUri);
         $pathArr = array_slice($pathArr, 3);
         $path = '/' . implode('/', $pathArr);
-        
-        if(strpos($path, '?')) {
+
+        if (strpos($path, '?')) {
             $path = explode('?', $path)[0];
         }
-        
+
         return $path;
     }
 
