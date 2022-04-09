@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit bootstrap="vendor/autoload.php"
+    colors="true"
+    verbose="true"
+    stopOnFailure="false">
+    <testsuites>
+        <testsuite name="Yet Another Controller Test Suite">
+            <directory>./tests/Controller</directory>
+        </testsuite>
+    </testsuites>
+</phpunit>
