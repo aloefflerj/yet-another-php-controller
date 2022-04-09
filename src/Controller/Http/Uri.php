@@ -44,6 +44,9 @@ class Uri
         return $this->scheme;
     }
 
+    /**
+     * @throws \InvalidArgumentException 
+     */
     public function withScheme(string $scheme): self
     {
         if(!in_array($scheme, $this->getValidSchemes())) {
