@@ -17,16 +17,18 @@ class UriTest extends TestCase
             'userInfo' => '',
             'host' => 'test.com',
             'port' => '',
-            'path' => '/'
+            'path' => '/',
+            'query' => ''
         ],
         1 => [
-            'uri' => 'http://aloefflerj:12345@github.com/repositories',
+            'uri' => 'http://aloefflerj:12345@github.com/repositories?p=113&foo=bar#yes-i-do',
             'scheme' => 'http',
             'authority' => 'aloefflerj:12345@github.com',
             'userInfo' => 'aloefflerj:12345',
             'host' => 'github.com',
             'port' => '',
-            'path' => '/repositories'
+            'path' => '/repositories',
+            'query' => 'p=113&foo=bar'
         ],
         2 => [
             'uri' => 'http://localhost:80/users/1',
@@ -35,7 +37,8 @@ class UriTest extends TestCase
             'userInfo' => '',
             'host' => 'localhost',
             'port' => 80,
-            'path' => '/users/1'
+            'path' => '/users/1',
+            'query' => ''
         ],
         3 => [
             'uri' => 'ftp://user@host/foo/bar.txt',
@@ -44,7 +47,8 @@ class UriTest extends TestCase
             'userInfo' => 'user',
             'host' => 'host',
             'port' => '',
-            'path' => '/foo/bar.txt'
+            'path' => '/foo/bar.txt',
+            'query' => ''
         ]
     ];
 
@@ -107,6 +111,15 @@ class UriTest extends TestCase
             $uri = new Uri($example['uri']);
             $path = $uri->getPath();
             $this->assertEquals($example['path'], $path);
+        }
+    }
+
+    public function testGetQuery(): void
+    {
+        foreach (self::EXAMPLES as $example) {
+            $uri = new Uri($example['uri']);
+            $query = $uri->getQuery();
+            $this->assertEquals($example['query'], $query);
         }
     }
 }
