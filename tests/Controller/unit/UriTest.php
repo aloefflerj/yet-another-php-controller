@@ -165,4 +165,19 @@ class UriTest extends TestCase
             $this->assertEquals('test.io', $host);
         }
     }
+
+    public function testWithPort(): void
+    {
+        foreach (self::EXAMPLES as $example) {
+            $uri = new Uri($example['uri']);
+
+            $uri = $uri->withPort(3000);
+            $port = $uri->getPort();
+            $this->assertEquals(3000, $port);
+
+            $uri = $uri->withPort(null);
+            $port = $uri->getPort();
+            $this->assertEquals(null, $port);
+        }
+    }
 }
