@@ -67,6 +67,14 @@ class Uri
         return $clone;
     }
 
+    public function withHost($host): self
+    {
+        $clone = clone $this;
+        $clone->host = $host;
+
+        return $clone;
+    }
+
     public function getAuthority(): string
     {
         return $this->authority;
