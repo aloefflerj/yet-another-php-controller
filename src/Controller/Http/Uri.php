@@ -49,13 +49,21 @@ class Uri
      */
     public function withScheme(string $scheme): self
     {
-        if(!in_array($scheme, $this->getValidSchemes())) {
+        if (!in_array($scheme, $this->getValidSchemes())) {
             throw new \InvalidArgumentException('This scheme is not valid');
         }
-        
+
         $clone = clone $this;
         $clone->scheme = $scheme;
-        
+
+        return $clone;
+    }
+
+    public function withUserInfo(string $user, ?string $password): self
+    {
+        $clone = clone $this;
+        $clone->userInfo = "{$user}:{$password}";
+
         return $clone;
     }
 
