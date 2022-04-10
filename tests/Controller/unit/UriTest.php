@@ -16,7 +16,8 @@ class UriTest extends TestCase
             'authority' => 'test.com',
             'userInfo' => '',
             'host' => 'test.com',
-            'port' => ''
+            'port' => '',
+            'path' => '/'
         ],
         1 => [
             'uri' => 'http://aloefflerj:12345@github.com/repositories',
@@ -24,7 +25,8 @@ class UriTest extends TestCase
             'authority' => 'aloefflerj:12345@github.com',
             'userInfo' => 'aloefflerj:12345',
             'host' => 'github.com',
-            'port' => ''
+            'port' => '',
+            'path' => '/repositories'
         ],
         2 => [
             'uri' => 'http://localhost:80/users/1',
@@ -32,7 +34,8 @@ class UriTest extends TestCase
             'authority' => 'localhost:80',
             'userInfo' => '',
             'host' => 'localhost',
-            'port' => 80
+            'port' => 80,
+            'path' => '/users/1'
         ],
         3 => [
             'uri' => 'ftp://user@host/foo/bar.txt',
@@ -40,7 +43,8 @@ class UriTest extends TestCase
             'authority' => 'user@host',
             'userInfo' => 'user',
             'host' => 'host',
-            'port' => ''
+            'port' => '',
+            'path' => '/foo/bar.txt'
         ]
     ];
 
@@ -94,6 +98,15 @@ class UriTest extends TestCase
             $uri = new Uri($example['uri']);
             $port = $uri->getPort();
             $this->assertEquals($example['port'], $port);
+        }
+    }
+
+    public function testGetPath(): void
+    {
+        foreach (self::EXAMPLES as $example) {
+            $uri = new Uri($example['uri']);
+            $path = $uri->getPath();
+            $this->assertEquals($example['path'], $path);
         }
     }
 }
