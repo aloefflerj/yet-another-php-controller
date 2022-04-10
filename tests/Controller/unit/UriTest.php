@@ -15,28 +15,32 @@ class UriTest extends TestCase
             'scheme' => 'https',
             'authority' => 'test.com',
             'userInfo' => '',
-            'host' => 'test.com'
+            'host' => 'test.com',
+            'port' => ''
         ],
         1 => [
             'uri' => 'http://aloefflerj:12345@github.com/repositories',
             'scheme' => 'http',
             'authority' => 'aloefflerj:12345@github.com',
             'userInfo' => 'aloefflerj:12345',
-            'host' => 'github.com'
+            'host' => 'github.com',
+            'port' => ''
         ],
         2 => [
             'uri' => 'http://localhost:80/users/1',
             'scheme' => 'http',
             'authority' => 'localhost:80',
             'userInfo' => '',
-            'host' => 'localhost'
+            'host' => 'localhost',
+            'port' => 80
         ],
         3 => [
             'uri' => 'ftp://user@host/foo/bar.txt',
             'scheme' => 'ftp',
             'authority' => 'user@host',
             'userInfo' => 'user',
-            'host' => 'host'
+            'host' => 'host',
+            'port' => ''
         ]
     ];
 
@@ -81,6 +85,15 @@ class UriTest extends TestCase
             $uri = new Uri($example['uri']);
             $host = $uri->getHost();
             $this->assertEquals($example['host'], $host);
+        }
+    }
+
+    public function testGetPort(): void
+    {
+        foreach (self::EXAMPLES as $example) {
+            $uri = new Uri($example['uri']);
+            $port = $uri->getPort();
+            $this->assertEquals($example['port'], $port);
         }
     }
 }
