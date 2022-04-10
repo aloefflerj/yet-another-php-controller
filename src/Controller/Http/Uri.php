@@ -75,6 +75,14 @@ class Uri
         return $clone;
     }
 
+    public function withPort(?int $port): self
+    {
+        $clone = clone $this;
+        $clone->port = $port;
+
+        return $clone;
+    }
+
     public function getAuthority(): string
     {
         return $this->authority;
