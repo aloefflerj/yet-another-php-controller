@@ -12,11 +12,23 @@ class UriTest extends TestCase
     const EXAMPLES = [
         0 => [
             'uri' => 'https://teste.com/',
-            'scheme' => 'https'
+            'scheme' => 'https',
+            'authority' => 'teste.com'
         ],
         1 => [
             'uri' => 'http://aloefflerj:12345@github.com/repositories',
-            'scheme' => 'http'
+            'scheme' => 'http',
+            'authority' => 'aloefflerj:12345@github.com'
+        ],
+        2 => [
+            'uri' => 'http://localhost:80/users/1',
+            'scheme' => 'http',
+            'authority' => 'localhost:80'
+        ],
+        3 => [
+            'uri' => 'ftp://user@host/foo/bar.txt',
+            'scheme' => 'ftp',
+            'authority' => 'user@host'
         ]
     ];
 
@@ -34,6 +46,15 @@ class UriTest extends TestCase
             $uri = new Uri($example['uri']);
             $scheme = $uri->getScheme();
             $this->assertEquals($example['scheme'], $scheme);
+        }
+    }
+
+    public function testGetAuthority(): void
+    {
+        foreach (self::EXAMPLES as $example) {
+            $uri = new Uri($example['uri']);
+            $authority = $uri->getAuthority();
+            $this->assertEquals($example['authority'], $authority);
         }
     }
 }
