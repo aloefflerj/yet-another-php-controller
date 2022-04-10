@@ -180,4 +180,15 @@ class UriTest extends TestCase
             $this->assertEquals(null, $port);
         }
     }
+
+    public function testWithPath(): void
+    {
+        foreach (self::EXAMPLES as $example) {
+            $uri = new Uri($example['uri']);
+
+            $uri = $uri->withPath('/new-path');
+            $path = $uri->getPath();
+            $this->assertEquals('/new-path', $path);
+        }
+    }
 }
