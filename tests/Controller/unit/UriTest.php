@@ -18,7 +18,8 @@ class UriTest extends TestCase
             'host' => 'test.com',
             'port' => '',
             'path' => '/',
-            'query' => ''
+            'query' => '',
+            'fragment' => ''
         ],
         1 => [
             'uri' => 'http://aloefflerj:12345@github.com/repositories?p=113&foo=bar#yes-i-do',
@@ -28,7 +29,8 @@ class UriTest extends TestCase
             'host' => 'github.com',
             'port' => '',
             'path' => '/repositories',
-            'query' => 'p=113&foo=bar'
+            'query' => 'p=113&foo=bar',
+            'fragment' => 'yes-i-do'
         ],
         2 => [
             'uri' => 'http://localhost:80/users/1',
@@ -38,7 +40,8 @@ class UriTest extends TestCase
             'host' => 'localhost',
             'port' => 80,
             'path' => '/users/1',
-            'query' => ''
+            'query' => '',
+            'fragment' => ''
         ],
         3 => [
             'uri' => 'ftp://user@host/foo/bar.txt',
@@ -48,7 +51,8 @@ class UriTest extends TestCase
             'host' => 'host',
             'port' => '',
             'path' => '/foo/bar.txt',
-            'query' => ''
+            'query' => '',
+            'fragment' => ''
         ]
     ];
 
@@ -120,6 +124,15 @@ class UriTest extends TestCase
             $uri = new Uri($example['uri']);
             $query = $uri->getQuery();
             $this->assertEquals($example['query'], $query);
+        }
+    }
+
+    public function testGetFragment(): void
+    {
+        foreach (self::EXAMPLES as $example) {
+            $uri = new Uri($example['uri']);
+            $fragment = $uri->getfragment();
+            $this->assertEquals($example['fragment'], $fragment);
         }
     }
 }
