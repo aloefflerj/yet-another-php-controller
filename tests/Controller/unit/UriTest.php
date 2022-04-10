@@ -11,28 +11,32 @@ class UriTest extends TestCase
 {
     const EXAMPLES = [
         0 => [
-            'uri' => 'https://teste.com/',
+            'uri' => 'https://test.com/',
             'scheme' => 'https',
-            'authority' => 'teste.com',
-            'userInfo' => ''
+            'authority' => 'test.com',
+            'userInfo' => '',
+            'host' => 'test.com'
         ],
         1 => [
             'uri' => 'http://aloefflerj:12345@github.com/repositories',
             'scheme' => 'http',
             'authority' => 'aloefflerj:12345@github.com',
-            'userInfo' => 'aloefflerj:12345'
+            'userInfo' => 'aloefflerj:12345',
+            'host' => 'github.com'
         ],
         2 => [
             'uri' => 'http://localhost:80/users/1',
             'scheme' => 'http',
             'authority' => 'localhost:80',
-            'userInfo' => ''
+            'userInfo' => '',
+            'host' => 'localhost'
         ],
         3 => [
             'uri' => 'ftp://user@host/foo/bar.txt',
             'scheme' => 'ftp',
             'authority' => 'user@host',
-            'userInfo' => 'user'
+            'userInfo' => 'user',
+            'host' => 'host'
         ]
     ];
 
@@ -68,6 +72,15 @@ class UriTest extends TestCase
             $uri = new Uri($example['uri']);
             $userInfo = $uri->getUserInfo();
             $this->assertEquals($example['userInfo'], $userInfo);
+        }
+    }
+
+    public function testGetHost(): void
+    {
+        foreach (self::EXAMPLES as $example) {
+            $uri = new Uri($example['uri']);
+            $host = $uri->getHost();
+            $this->assertEquals($example['host'], $host);
         }
     }
 }
