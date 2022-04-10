@@ -135,4 +135,24 @@ class UriTest extends TestCase
             $this->assertEquals($example['fragment'], $fragment);
         }
     }
+
+    public function testWithScheme(): void
+    {
+        foreach (self::EXAMPLES as $example) {
+            $uri = new Uri($example['uri']);
+            $uri = $uri->withScheme('file');
+            $scheme = $uri->getScheme();
+            $this->assertEquals('file', $scheme);
+        }
+    }
+
+    public function testWithUserInfo(): void
+    {
+        foreach (self::EXAMPLES as $example) {
+            $uri = new Uri($example['uri']);
+            $uri = $uri->withUserInfo('john', '12345');
+            $userInfo = $uri->getUserInfo();
+            $this->assertEquals('john:12345', $userInfo);
+        }
+    }
 }
