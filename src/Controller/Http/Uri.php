@@ -141,9 +141,11 @@ class Uri
     {
         $host = '';
         $authority = $this->authority;
+        $host = $authority;
 
         if (strpos($authority, '@')) {
             $host = explode('@', $authority)[1];
+            return strtolower($host);
         }
 
         if (strpos($authority, ':')) {
