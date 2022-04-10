@@ -213,6 +213,6 @@ class Uri
         $query      = $this->getQuery() ? "?{$this->getQuery()}" : '';
         $fragment   = $this->getFragment() ? "#{$this->getFragment()}" : '';
 
-        return "{$scheme}//{$authority}{$path}{$query}{$fragment}";
+        return "{$scheme}://{$authority}{$path}{$query}{$fragment}";
     }
 }

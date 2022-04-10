@@ -9,10 +9,31 @@ use PHPUnit\Framework\TestCase;
 
 class UriTest extends TestCase
 {
-    function testToString(): void
+    const EXAMPLES = [
+        0 => [
+            'uri' => 'https://teste.com/',
+            'scheme' => 'https'
+        ],
+        1 => [
+            'uri' => 'http://aloefflerj:12345@github.com/repositories',
+            'scheme' => 'http'
+        ]
+    ];
+
+    public function testUriToString(): void
     {
-        $uriString = 'http://teste.com/';
-        $uriPath = strval(new Uri($uriString));
-        $this->assertSame($uriString, $uriPath);
+        foreach (self::EXAMPLES as $example) {
+            $uriFullPath = strval(new Uri($example['uri']));
+            $this->assertEquals($example['uri'], $uriFullPath);
+        }
+    }
+
+    public function testGetScheme(): void
+    {
+        foreach (self::EXAMPLES as $example) {
+            $uri = new Uri($example['uri']);
+            $scheme = $uri->getScheme();
+            $this->assertEquals($example['scheme'], $scheme);
+        }
     }
 }
