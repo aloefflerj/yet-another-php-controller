@@ -155,4 +155,14 @@ class UriTest extends TestCase
             $this->assertEquals('john:12345', $userInfo);
         }
     }
+
+    public function testWithHost(): void
+    {
+        foreach (self::EXAMPLES as $example) {
+            $uri = new Uri($example['uri']);
+            $uri = $uri->withHost('test.io');
+            $host = $uri->getHost();
+            $this->assertEquals('test.io', $host);
+        }
+    }
 }
