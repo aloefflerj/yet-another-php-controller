@@ -189,6 +189,10 @@ class UriTest extends TestCase
             $uri = $uri->withPath('/new-path');
             $path = $uri->getPath();
             $this->assertEquals('/new-path', $path);
+
+            $this->expectException(\InvalidArgumentException::class);
+            $uri = $uri->withPath('::not a valid path::');
+            $path = $uri->getPath();
         }
     }
 }
