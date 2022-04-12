@@ -83,6 +83,21 @@ class Uri
         return $clone;
     }
 
+    /**
+     * @throws \InvalidArgumentException
+     */
+    public function withPath($path): self
+    {
+        if (!preg_match('/(\/[a-z0-9]*).*/', $path)) {
+            throw new \InvalidArgumentException('This path is not valid');
+        }
+
+        $clone = clone $this;
+        $clone->path = $path;
+
+        return $clone;
+    }
+
     public function getAuthority(): string
     {
         return $this->authority;
