@@ -86,7 +86,7 @@ class Uri
     /**
      * @throws \InvalidArgumentException
      */
-    public function withPath($path): self
+    public function withPath(string $path): self
     {
         if (!preg_match('/(\/[a-z0-9]*).*/', $path)) {
             throw new \InvalidArgumentException('This path is not valid');
