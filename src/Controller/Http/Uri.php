@@ -89,11 +89,23 @@ class Uri
     public function withPath(string $path): self
     {
         if (!preg_match('/(\/[a-z0-9]*).*/', $path)) {
-            throw new \InvalidArgumentException('This path is not valid');
+            throw new \InvalidArgumentException('Invalid uri path');
         }
 
         $clone = clone $this;
         $clone->path = $path;
+
+        return $clone;
+    }
+
+    public function withQuery(string $query): self
+    {
+        if (!preg_match('/^([^=]+=[^=]+&)+[^=]+(=[^=]+)?$/', $query)) {
+            throw new \InvalidArgumentException('Invalid uri query');
+        }
+
+        $clone = clone $this;
+        $clone->query = $query;
 
         return $clone;
     }
