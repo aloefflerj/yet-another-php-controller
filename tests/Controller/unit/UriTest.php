@@ -143,6 +143,14 @@ class UriTest extends TestCase
             $uri = $uri->withScheme('file');
             $scheme = $uri->getScheme();
             $this->assertEquals('file', $scheme);
+
+            $this->expectException(\InvalidArgumentException::class);
+            $uri = $uri->withScheme('-wrongscheme');
+            $scheme = $uri->getScheme();
+
+            $this->expectException(\InvalidArgumentException::class);
+            $uri = $uri->withScheme('WRONGSCHEME');
+            $scheme = $uri->getScheme();
         }
     }
 
