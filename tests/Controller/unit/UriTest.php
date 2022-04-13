@@ -195,4 +195,27 @@ class UriTest extends TestCase
             $path = $uri->getPath();
         }
     }
+
+    public function testWithQuery(): void
+    {
+        foreach (self::EXAMPLES as $example) {
+            $uri = new Uri($example['uri']);
+
+            $uri = $uri->withQuery('p=120&foo=baz');
+            $query = $uri->getQuery();
+            $this->assertEquals('p=120&foo=baz', $query);
+
+            $this->expectException(\InvalidArgumentException::class);
+            $uri = $uri->withPath('==sdf=');
+            $query = $uri->getQuery();
+
+            $this->expectException(\InvalidArgumentException::class);
+            $uri = $uri->withPath('p=120=');
+            $query = $uri->getQuery();
+
+            $this->expectException(\InvalidArgumentException::class);
+            $uri = $uri->withPath('p=120&foo=baz=q');
+            $query = $uri->getQuery();
+        }
+    }
 }
