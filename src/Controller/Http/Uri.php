@@ -137,6 +137,16 @@ class Uri
         return $clone;
     }
 
+    public function withFragment(string $fragment): self
+    {
+        $fragment = filter_var($fragment);
+
+        $clone = clone $this;
+        $clone->fragment = $fragment;
+
+        return $clone;
+    }
+
     public function getAuthority(): string
     {
         return $this->authority;
