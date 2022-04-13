@@ -163,6 +163,18 @@ class UriTest extends TestCase
             $uri = $uri->withHost('test.io');
             $host = $uri->getHost();
             $this->assertEquals('test.io', $host);
+
+            $uri = $uri->withHost('test.com.br');
+            $host = $uri->getHost();
+            $this->assertEquals('test.com.br', $host);
+            
+            $this->expectException(\InvalidArgumentException::class);
+            $uri = $uri->withHost('!hello.com');
+            $host = $uri->getHost();
+
+            $this->expectException(\InvalidArgumentException::class);
+            $uri = $uri->withHost('hello@world.com.br');
+            $host = $uri->getHost();
         }
     }
 
