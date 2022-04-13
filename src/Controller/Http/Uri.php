@@ -67,8 +67,18 @@ class Uri
         return $clone;
     }
 
-    public function withHost($host): self
+    /**
+     * @throws \InvalidArgumentException
+     */
+    public function withHost(string $host): self
     {
+        if (!preg_match(
+            '/^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$/',
+            $host
+        )) {
+            throw new \InvalidArgumentException('Invalid host');
+        }
+
         $clone = clone $this;
         $clone->host = $host;
 
