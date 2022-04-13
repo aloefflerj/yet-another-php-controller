@@ -75,8 +75,15 @@ class Uri
         return $clone;
     }
 
+    /**
+     * @throws \InvalidArgumentException
+     */
     public function withPort(?int $port): self
     {
+        if (!is_null($port) && !preg_match('/^\d{1,4}$/', $port)) {
+            throw new \InvalidArgumentException('Invalid uri port');
+        }
+
         $clone = clone $this;
         $clone->port = $port;
 
@@ -98,6 +105,9 @@ class Uri
         return $clone;
     }
 
+    /**
+     * @throws \InvalidArgumentException
+     */
     public function withQuery(string $query): self
     {
         if (!preg_match('/^([^=]+=[^=]+&)+[^=]+(=[^=]+)?$/', $query)) {
