@@ -175,9 +175,17 @@ class UriTest extends TestCase
             $port = $uri->getPort();
             $this->assertEquals(3000, $port);
 
+            $uri = $uri->withPort(80);
+            $port = $uri->getPort();
+            $this->assertEquals(80, $port);
+
             $uri = $uri->withPort(null);
             $port = $uri->getPort();
             $this->assertEquals(null, $port);
+            
+            $this->expectException(\InvalidArgumentException::class);
+            $uri = $uri->withPort(424242);
+            $port = $uri->getPort();
         }
     }
 
