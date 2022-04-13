@@ -49,8 +49,15 @@ class Uri
      */
     public function withScheme(string $scheme): self
     {
+        if (!preg_match(
+            '/^[\da-z][\da-z\-]{1,20}$/',
+            $scheme
+        )) {
+            throw new \InvalidArgumentException('This scheme in not valid');
+        }
+
         if (!in_array($scheme, $this->getValidSchemes())) {
-            throw new \InvalidArgumentException('This scheme is not valid');
+            throw new \InvalidArgumentException('This scheme is not supported');
         }
 
         $clone = clone $this;
