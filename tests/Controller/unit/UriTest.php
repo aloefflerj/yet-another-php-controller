@@ -246,4 +246,15 @@ class UriTest extends TestCase
             $query = $uri->getQuery();
         }
     }
+
+    public function testWithFragment(): void
+    {
+        foreach (self::EXAMPLES as $example) {
+            $uri = new Uri($example['uri']);
+
+            $uri = $uri->withFragment('i-drank-too-much-coffee-help');
+            $fragment = $uri->getFragment();
+            $this->assertEquals('i-drank-too-much-coffee-help', $fragment);
+        }
+    }
 }
