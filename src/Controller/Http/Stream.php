@@ -6,14 +6,20 @@ use Aloefflerj\YetAnotherController\Controller\PSR\StreamInterface;
 
 class Stream implements StreamInterface
 {
-
     public $stream;
     private bool $writable;
     private bool $readable;
     private ?int $size;
 
+    /**
+     * @throws \InvalidArgumentException
+     */
     public function __construct($resource)
     {
+        if (!is_resource($resource)) {
+            throw new \InvalidArgumentException('Argument must be a valid resource type');
+        }
+        
         $this->stream = $resource;
 
         $this->writable = false;
