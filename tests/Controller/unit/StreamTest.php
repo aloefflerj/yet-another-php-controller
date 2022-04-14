@@ -10,6 +10,16 @@ use PHPUnit\Framework\TestCase;
 class StramTest extends TestCase
 {
     const FILE_PATH = __DIR__ . '/StreamDummyFile.txt';
+
+    public function testConstruct(): void
+    {
+        $resource = fopen(self::FILE_PATH, 'r+');
+        $stream = new Stream($resource);
+
+        $this->expectException(\InvalidArgumentException::class);
+        $resource = self::FILE_PATH;
+        $stream = new Stream($resource);
+    }
     
     public function testIsWritable():void
     {
