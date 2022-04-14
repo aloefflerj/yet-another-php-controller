@@ -20,8 +20,8 @@ class StramTest extends TestCase
         $resource = self::FILE_PATH;
         $stream = new Stream($resource);
     }
-    
-    public function testIsWritable():void
+
+    public function testIsWritable(): void
     {
         $resource = fopen(self::FILE_PATH, 'r+');
         $stream = new Stream($resource);
@@ -30,5 +30,16 @@ class StramTest extends TestCase
         $resource = fopen(self::FILE_PATH, 'r');
         $stream = new Stream($resource);
         $this->assertFalse($stream->isWritable());
+    }
+
+    public function testIsReadable(): void
+    {
+        $resource = fopen(self::FILE_PATH, 'r');
+        $stream = new Stream($resource);
+        $this->assertTrue($stream->isReadable());
+
+        $resource = fopen(self::FILE_PATH, 'w');
+        $stream = new Stream($resource);
+        $this->assertFalse($stream->isReadable());
     }
 }
