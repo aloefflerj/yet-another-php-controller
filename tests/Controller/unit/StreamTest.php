@@ -55,8 +55,20 @@ class StramTest extends TestCase
         $resource = fopen(self::FILE_PATH, 'r+');
         $stream = new Stream($resource);
         $stream->close();
-        
+
         $this->expectWarning();
         $stream->getContents();
+    }
+
+    public function testDetach(): void
+    {
+        $resource = fopen(self::FILE_PATH, 'r+');
+        $stream = new Stream($resource);
+        $legacy = $stream->detach();
+        $this->assertIsResource($legacy);
+        
+        $legacy = $stream->detach();
+        $this->assertNull($legacy);
+
     }
 }
