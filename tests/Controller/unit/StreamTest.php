@@ -42,11 +42,21 @@ class StramTest extends TestCase
         $stream = new Stream($resource);
         $this->assertFalse($stream->isReadable());
     }
-    
-    public function testIsSeekable(): void 
+
+    public function testIsSeekable(): void
     {
         $resource = fopen(self::FILE_PATH, 'r+');
         $stream = new Stream($resource);
         $this->assertTrue($stream->isSeekable());
+    }
+
+    public function testClose(): void
+    {
+        $resource = fopen(self::FILE_PATH, 'r+');
+        $stream = new Stream($resource);
+        $stream->close();
+        
+        $this->expectWarning();
+        $stream->getContents();
     }
 }
