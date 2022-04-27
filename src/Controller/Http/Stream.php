@@ -124,6 +124,9 @@ class Stream implements StreamInterface
         return $this->size;
     }
 
+    /**
+     * @throws \RuntimeException
+     */
     public function tell()
     {
         $pointer = false;
