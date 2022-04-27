@@ -10,6 +10,7 @@ use PHPUnit\Framework\TestCase;
 class StreamTest extends TestCase
 {
     const FILE_PATH = __DIR__ . '/StreamDummyFile.txt';
+    const DUMMY_TEXT = 'This is just a dummy file. Nothing to see here. Sorry :/';
 
     public function testConstruct(): void
     {
@@ -75,10 +76,23 @@ class StreamTest extends TestCase
     {
         $resource = fopen(self::FILE_PATH, 'r+');
         $stream = new Stream($resource);
-        $stream->write('This is just a dummy file. Nothing to see here. Sorry :/');
+        $stream->write(self::DUMMY_TEXT);
         $this->assertEquals(56, $stream->getSize());
 
         $stream->detach();
         $this->assertNull($stream->getSize());
+    }
+
+    public function testTell(): void
+    {
+        $resource = fopen(self::FILE_PATH, 'r+');
+        $stream = new Stream($resource);
+        $stream->write(self::DUMMY_TEXT);
+        $stream->seek(42);
+        $this->assertEquals(42, $stream->tell());
+
+        $this->expectException(\RuntimeException::class);
+        $stream->seek(-1);
+        $stream->tell();
     }
 }
