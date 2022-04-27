@@ -19,7 +19,7 @@ class Stream implements StreamInterface
         if (!is_resource($resource)) {
             throw new \InvalidArgumentException('Argument must be a valid resource type');
         }
-        
+
         $this->stream = $resource;
 
         $this->writable = false;
@@ -41,6 +41,7 @@ class Stream implements StreamInterface
         }
 
         $this->seekable = $meta['seekable'];
+        $this->size = null;
     }
 
     public function __toString()
@@ -215,12 +216,11 @@ class Stream implements StreamInterface
         }
 
         return $string;
-
     }
 
     public function getContents()
-    {   
-        if(!$this->isReadable()) {
+    {
+        if (!$this->isReadable()) {
             throw new \RuntimeException(
                 'Unable to read from file'
             );
@@ -228,12 +228,12 @@ class Stream implements StreamInterface
 
         $string = stream_get_contents($this->stream);
 
-        if($string === false) {
+        if ($string === false) {
             throw new \RuntimeException(
                 'Unable to read from stream'
             );
         }
-        
+
         return $string;
     }
 
