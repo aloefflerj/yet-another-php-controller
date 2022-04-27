@@ -7,7 +7,7 @@ namespace Aloefflerj\YetAnotherController;
 use Aloefflerj\YetAnotherController\Controller\Http\Stream;
 use PHPUnit\Framework\TestCase;
 
-class StramTest extends TestCase
+class StreamTest extends TestCase
 {
     const FILE_PATH = __DIR__ . '/StreamDummyFile.txt';
 
@@ -66,9 +66,19 @@ class StramTest extends TestCase
         $stream = new Stream($resource);
         $legacy = $stream->detach();
         $this->assertIsResource($legacy);
-        
+
         $legacy = $stream->detach();
         $this->assertNull($legacy);
+    }
 
+    public function testGetSize(): void
+    {
+        $resource = fopen(self::FILE_PATH, 'r+');
+        $stream = new Stream($resource);
+        $stream->write('This is just a dummy file. Nothing to see here. Sorry :/');
+        $this->assertEquals(56, $stream->getSize());
+
+        $stream->detach();
+        $this->assertNull($stream->getSize());
     }
 }
