@@ -95,4 +95,15 @@ class StreamTest extends TestCase
         $stream->seek(-1);
         $stream->tell();
     }
+
+    public function testEof(): void
+    {
+        $resource = fopen(self::FILE_PATH, 'r+');
+        $stream = new Stream($resource);
+        $stream->seek(10);
+        $this->assertFalse($stream->eof());
+
+        $stream->seek(0, SEEK_END);
+        $this->assertTrue($stream->eof());
+    }
 }
