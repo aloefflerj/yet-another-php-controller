@@ -170,11 +170,7 @@ class Stream implements StreamInterface
 
         if (fseek($this->stream, $offset, $whence) === -1) {
             throw new \RuntimeException(
-                sprintf(
-                    '%s. Unable to seek to stream at position %s',
-                    $errorMsg,
-                    $offset
-                )
+                "{$errorMsg}. Unable to seek to stream at position {$offset}."
             );
         }
     }
