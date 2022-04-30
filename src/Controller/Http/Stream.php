@@ -146,7 +146,7 @@ class Stream implements StreamInterface
 
     public function eof(): bool
     {
-        return $this->stream ? feof($this->stream) : true;
+        return $this->stream ? $this->tell() === $this->getSize()  : true;
     }
 
     public function seek($offset, $whence = SEEK_SET)
@@ -161,9 +161,9 @@ class Stream implements StreamInterface
         $whence = (int) $whence;
 
         $message = [
+            SEEK_SET => 'Set position equal to offset bytes.',
             SEEK_CUR => 'Set position to current location plus offset.',
             SEEK_END => 'Set position to end-of-stream plus offset.',
-            SEEK_SET => 'Set position equal to offset bytes.',
         ];
 
         $errorMsg = $message[$whence] ?? 'Unknown error.';
