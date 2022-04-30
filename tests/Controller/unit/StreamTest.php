@@ -70,6 +70,7 @@ class StreamTest extends TestCase
 
         $legacy = $stream->detach();
         $this->assertNull($legacy);
+        $stream->close();
     }
 
     public function testGetSize(): void
@@ -81,6 +82,7 @@ class StreamTest extends TestCase
 
         $stream->detach();
         $this->assertNull($stream->getSize());
+        $stream->close();
     }
 
     public function testTell(): void
@@ -94,6 +96,7 @@ class StreamTest extends TestCase
         $this->expectException(\RuntimeException::class);
         $stream->seek(-1);
         $stream->tell();
+        $stream->close();
     }
 
     public function testEof(): void
@@ -105,5 +108,34 @@ class StreamTest extends TestCase
 
         $stream->seek(0, SEEK_END);
         $this->assertTrue($stream->eof());
+        $stream->close();
+    }
+
+    public function testSeek(): void
+    {
+        $resource = fopen(self::FILE_PATH, 'r+');
+        $stream = new Stream($resource);
+        $stream->seek(42);
+        $this->assertEquals(42, $stream->tell());
+        
+        $stream->seek(8, SEEK_CUR);
+        $this->assertEquals(50, $stream->tell());
+        
+        $stream->seek(0, SEEK_END);
+        $this->assertEquals($stream->getSize(), $stream->tell());
+        
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessageMatches('/.*. Unable to seek to stream at position\s+\-?\d+\.$/');
+        $stream->seek(-20000);
+
+        $stream->close();
+
+        $resource = fopen('https://google.com','rb');
+        $stream = new Stream($resource);
+        
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('Stream is not seakable');
+        $stream->seek(42);
+
     }
 }
