@@ -117,25 +117,45 @@ class StreamTest extends TestCase
         $stream = new Stream($resource);
         $stream->seek(42);
         $this->assertEquals(42, $stream->tell());
-        
+
         $stream->seek(8, SEEK_CUR);
         $this->assertEquals(50, $stream->tell());
-        
+
         $stream->seek(0, SEEK_END);
         $this->assertEquals($stream->getSize(), $stream->tell());
-        
+
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessageMatches('/.*. Unable to seek to stream at position\s+\-?\d+\.$/');
         $stream->seek(-20000);
 
         $stream->close();
 
-        $resource = fopen('https://google.com','rb');
+        $resource = fopen('https://google.com', 'rb');
         $stream = new Stream($resource);
         
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessage('Stream is not seakable');
         $stream->seek(42);
+        $stream->close();
+    }
+    
+    public function testRewind(): void
+    {
+        $resource = fopen(self::FILE_PATH, 'r+');
+        $stream = new Stream($resource);
+        $stream->rewind();
+        
+        $this->assertEquals(0, $stream->tell());
 
+        $stream->close();
+        
+        $resource = fopen('https://google.com', 'rb');
+        $stream = new Stream($resource);
+        
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('Stream is not seakable');
+        $stream->rewind();
+        $stream->close();
+        
     }
 }
