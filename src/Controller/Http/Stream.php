@@ -190,18 +190,18 @@ class Stream implements StreamInterface
     {
         $size = 0;
 
-        if ($this->isStream() && $this->isWritable()) {
-            $size = fwrite($this->stream, $string);
+        if ($this->isStream()) {
+            $writeResult = fwrite($this->stream, $string);
         }
 
-        if ($size === false) {
+        if ($writeResult === false) {
             throw new \RuntimeException(
-                'Unable to write %s to stream',
-                $string
+                "Unable to write '{$string}' to stream",
             );
         }
 
         $this->size = null;
+        $size = $writeResult;
 
         return $size;
     }
