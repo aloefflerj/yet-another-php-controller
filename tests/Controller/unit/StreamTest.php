@@ -164,7 +164,14 @@ class StreamTest extends TestCase
         $stream = new Stream(fopen('php://temp', 'r+'));
         $bytesWritten = $stream->write($dummyText);
         $this->assertEquals($stream->getSize(), $bytesWritten);
-        
+
         $this->assertEquals($dummyText, $stream->getContents());
+
+        $stream->close();
+
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessageMatches('/^Unable to write \'.*\' to stream$/');
+        $stream = new Stream(fopen('php://temp', 'r'));
+        $stream->write('I\'m not going to be written down. :(');
     }
 }
