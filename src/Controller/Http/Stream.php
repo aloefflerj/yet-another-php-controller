@@ -183,7 +183,10 @@ class Stream implements StreamInterface
         $this->seek(0);
     }
 
-    public function write($string)
+    /**
+     * @throws \RuntimeException
+     */
+    public function write($string): int
     {
         $size = 0;
 
@@ -228,7 +231,7 @@ class Stream implements StreamInterface
             );
         }
 
-        $string = stream_get_contents($this->stream);
+        $string = stream_get_contents($this->stream, $this->getSize(), 0);
 
         if ($string === false) {
             throw new \RuntimeException(
