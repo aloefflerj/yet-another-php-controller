@@ -173,5 +173,23 @@ class StreamTest extends TestCase
         $this->expectExceptionMessageMatches('/^Unable to write \'.*\' to stream$/');
         $stream = new Stream(fopen('php://temp', 'r'));
         $stream->write('I\'m not going to be written down. :(');
+        $stream->close();
+    }
+
+    public function testRead(): void
+    {
+        $resource = fopen(self::FILE_PATH, 'r');
+        $stream = new Stream($resource);
+        $content = $stream->read(26);
+        $this->assertEquals('This is just a dummy file.', $content);
+
+        $stream->close();
+
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('Unable to read from stream');
+        $resource = fopen(self::FILE_PATH, 'w');
+        $stream = new Stream($resource);
+        $stream->read(1);
+        $stream->close();
     }
 }
