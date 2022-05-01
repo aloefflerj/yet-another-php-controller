@@ -206,7 +206,7 @@ class Stream implements StreamInterface
         return $size;
     }
 
-    public function read($length)
+    public function read($length): string
     {
         $string = false;
 
