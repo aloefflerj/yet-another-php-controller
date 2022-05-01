@@ -149,6 +149,9 @@ class Stream implements StreamInterface
         return $this->stream ? $this->tell() === $this->getSize()  : true;
     }
 
+    /**
+     * @throws \RuntimeException
+     */
     public function seek($offset, $whence = SEEK_SET)
     {
         if (!$this->seekable) {
