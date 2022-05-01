@@ -191,17 +191,16 @@ class Stream implements StreamInterface
         $size = 0;
 
         if ($this->isStream()) {
-            $writeResult = fwrite($this->stream, $string);
+            $size = fwrite($this->stream, $string);
         }
 
-        if ($writeResult === false) {
+        if ($size === false) {
             throw new \RuntimeException(
                 "Unable to write '{$string}' to stream",
             );
         }
 
         $this->size = null;
-        $size = $writeResult;
 
         return $size;
     }
@@ -223,7 +222,7 @@ class Stream implements StreamInterface
         return $string;
     }
 
-    public function getContents()
+    public function getContents(): string
     {
         if (!$this->isReadable()) {
             throw new \RuntimeException(
