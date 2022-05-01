@@ -192,4 +192,21 @@ class StreamTest extends TestCase
         $stream->read(1);
         $stream->close();
     }
+    
+    public function testGetContents(): void
+    {
+        $resource = fopen(self::FILE_PATH, 'r+');
+        $stream = new Stream($resource);
+        $stream->write(self::DUMMY_TEXT);
+        $this->assertEquals(self::DUMMY_TEXT, $stream->getContents());
+        $stream->close();
+
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('Unable to read from file');
+        $resource = fopen(self::FILE_PATH, 'w');
+        $stream = new Stream($resource);
+        $stream->write(self::DUMMY_TEXT);
+        $this->assertEquals(self::DUMMY_TEXT, $stream->getContents());
+        $stream->close();
+    }
 }
