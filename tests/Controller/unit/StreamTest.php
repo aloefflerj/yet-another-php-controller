@@ -132,30 +132,39 @@ class StreamTest extends TestCase
 
         $resource = fopen('https://google.com', 'rb');
         $stream = new Stream($resource);
-        
+
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessage('Stream is not seakable');
         $stream->seek(42);
         $stream->close();
     }
-    
+
     public function testRewind(): void
     {
         $resource = fopen(self::FILE_PATH, 'r+');
         $stream = new Stream($resource);
         $stream->rewind();
-        
+
         $this->assertEquals(0, $stream->tell());
 
         $stream->close();
-        
+
         $resource = fopen('https://google.com', 'rb');
         $stream = new Stream($resource);
-        
+
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessage('Stream is not seakable');
         $stream->rewind();
         $stream->close();
+    }
+
+    public function testWrite(): void
+    {
+        $dummyText = 'Another silly dummy text, only. :P';
+        $stream = new Stream(fopen('php://temp', 'r+'));
+        $bytesWritten = $stream->write($dummyText);
+        $this->assertEquals($stream->getSize(), $bytesWritten);
         
+        $this->assertEquals($dummyText, $stream->getContents());
     }
 }
