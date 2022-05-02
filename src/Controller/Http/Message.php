@@ -24,11 +24,7 @@ class Message implements MessageInterface
         return $this->protocolVersion;
     }
 
-    /**
-     * @param string $version
-     * @return static
-     */
-    public function withProtocolVersion(string $version)
+    public function withProtocolVersion(string $version): static
     {
         $clone = clone $this;
         $clone->protocolVersion = $version;
