@@ -44,9 +44,9 @@ class Stream implements StreamInterface
         $this->size = null;
     }
 
-    public function __toString()
+    public function __toString(): string
     {
-        echo $this->read($this->getSize());
+        return $this->getContents();
     }
 
     public function isWritable()
