@@ -11,6 +11,17 @@ class StreamTest extends TestCase
 {
     const FILE_PATH = __DIR__ . '/StreamDummyFile.txt';
     const DUMMY_TEXT = 'This is just a dummy file. Nothing to see here. Sorry :/';
+    static $dummyMetadata = [
+        "timed_out" => false,
+        "blocked" => true,
+        "eof" => false,
+        "wrapper_type" => "plainfile",
+        "stream_type" => "STDIO",
+        "mode" => "r+",
+        "unread_bytes" => 0,
+        "seekable" => true,
+        "uri" => __DIR__ . "/StreamDummyFile.txt"
+    ];
 
     public function testConstruct(): void
     {
@@ -192,7 +203,7 @@ class StreamTest extends TestCase
         $stream->read(1);
         $stream->close();
     }
-    
+
     public function testGetContents(): void
     {
         $resource = fopen(self::FILE_PATH, 'r+');
@@ -208,5 +219,13 @@ class StreamTest extends TestCase
         $stream->write(self::DUMMY_TEXT);
         $this->assertEquals(self::DUMMY_TEXT, $stream->getContents());
         $stream->close();
+    }
+
+    public function testGetMetadata(): void
+    {
+        $resource = fopen(self::FILE_PATH, 'r+');
+        $stream = new Stream($resource);
+        $stream->write(self::DUMMY_TEXT);
+        $this->assertEquals(self::$dummyMetadata, $stream->getMetadata());
     }
 }
