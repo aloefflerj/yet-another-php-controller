@@ -10,7 +10,7 @@ use PHPUnit\Framework\TestCase;
 
 class MessageTest extends TestCase
 {
-    public function testGetProtocolVersion(): void
+    public function testProtocolVersion(): void
     {
         $message = new Message();
         $this->assertEquals('1.0', $message->getProtocolVersion());
@@ -18,4 +18,6 @@ class MessageTest extends TestCase
         $message = $message->withProtocolVersion('1.1');
         $this->assertEquals('1.1', $message->getProtocolVersion());
     }
+
+
 }
