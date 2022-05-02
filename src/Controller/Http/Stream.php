@@ -91,6 +91,9 @@ class Stream implements StreamInterface
         $this->detach();
     }
 
+    /**
+     * @return resource|null
+     */
     public function detach()
     {
         if (!$this->isStream()) {
@@ -110,7 +113,7 @@ class Stream implements StreamInterface
         return $resource;
     }
 
-    public function getSize()
+    public function getSize(): ?int
     {
         if (!$this->isStream()) {
             return null;
@@ -127,7 +130,7 @@ class Stream implements StreamInterface
     /**
      * @throws \RuntimeException
      */
-    public function tell()
+    public function tell(): int
     {
         $pointer = false;
 
@@ -152,7 +155,7 @@ class Stream implements StreamInterface
     /**
      * @throws \RuntimeException
      */
-    public function seek($offset, $whence = SEEK_SET)
+    public function seek($offset, $whence = SEEK_SET): void
     {
         if (!$this->seekable) {
             throw new \RuntimeException(
@@ -178,7 +181,10 @@ class Stream implements StreamInterface
         }
     }
 
-    public function rewind()
+    /**
+     * @throws \RuntimeException
+     */
+    public function rewind(): void
     {
         $this->seek(0);
     }
