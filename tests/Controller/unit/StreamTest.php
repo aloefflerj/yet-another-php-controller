@@ -227,5 +227,15 @@ class StreamTest extends TestCase
         $stream = new Stream($resource);
         $stream->write(self::DUMMY_TEXT);
         $this->assertEquals(self::$dummyMetadata, $stream->getMetadata());
+        $stream->close();
+    }
+
+    public function testToString(): void
+    {
+        $resource = fopen(self::FILE_PATH, 'r+');
+        $stream = new Stream($resource);
+        $stream->write(self::DUMMY_TEXT);
+
+        $this->assertEquals(self::DUMMY_TEXT, $stream);
     }
 }
