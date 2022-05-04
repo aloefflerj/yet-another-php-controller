@@ -27,12 +27,12 @@ url: `localhost:8000/mascots/elephant`
         echo "PHP {$functionParams->mascot} mascot is awesome";
     }, ['mascot' => 'elephant']);
 ```
-url: `localhost:8000/elephant`
+url: `localhost:8000/mascots`
 > outputs: 'PHP elephant mascot is awesome'
 --------------------------------------
 `$req` and `$res` are waiting for the implementation of psr7, you can just ignore them for now. So in order to get the body on `post`, `put` and `delete` verbs, you must do:
 ```php
-    $app->post('/users', function ($req, $res, $body, $headerParams, $functionParams) {
+    $app->post('/mascots', function ($req, $res, $body, $headerParams, $functionParams) {
         print_r(json_decode($body));
     });
 ```
