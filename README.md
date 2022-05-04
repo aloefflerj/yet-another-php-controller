@@ -51,6 +51,8 @@ Sending a body like this:
         }
     ]
 ```
+url: `localhost:8000/mascots`
 > outputs: stdClass Object ( [mascots] => Array ( [0] => stdClass Object ( [id] => 1 [language] => php [mascot] => elephant ) [1] => stdClass Object ( [id] => 2 [language] => go [mascot] => gopher ) ) )
+----------------------------------------
 
 ###### Obs: the whole purpose of this repo is just for me to study and have fun. But you can try it if you want :v
