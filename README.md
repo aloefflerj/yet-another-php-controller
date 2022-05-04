@@ -14,7 +14,6 @@
 
 **You can pass header parameters...**
 ```php
-    $app = new BaseController();
     $app->get('mascots/{mascot}', function ($req, $res, $headerParams, $functionParams) {
         echo "PHP {$headerParams->mascot} mascot is awesome";
     });
@@ -24,7 +23,6 @@ url: `localhost:8000/mascots/elephant`
 
 **And function params**
 ```php
-    $app = new BaseController();
     $app->get('/mascots', function ($req, $res, $headerParams, $functionParams) {
         echo "PHP {$functionParams->mascot} mascot is awesome";
     }, ['mascot' => 'elephant']);
