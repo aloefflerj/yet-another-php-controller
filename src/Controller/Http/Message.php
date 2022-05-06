@@ -65,7 +65,7 @@ class Message implements MessageInterface
         $name = strtolower($name);
 
         if (array_key_exists($name, $this->headers)) {
-            return is_array($this->headers[$name]) ? implode(', ', $this->headers[$name]) : $this->headers[$name];
+            return is_array($this->headers[$name]) ? implode(',', $this->headers[$name]) : $this->headers[$name];
         }
 
         return '';
@@ -82,7 +82,7 @@ class Message implements MessageInterface
         if (!in_array(strtolower($name), $this->getValidHeaders())) {
             throw new \InvalidArgumentException('This header name does not exists');
         }
-        
+
         $clone = clone $this;
         $clone->headers = [$name => $value];
         return $clone;
@@ -90,23 +90,34 @@ class Message implements MessageInterface
 
     public function withAddedHeader($name, $value)
     {
-        $name = strtolower($name);
+        if (!in_array(strtolower($name), $this->getValidHeaders())) {
+            throw new \InvalidArgumentException('This header name does not exists');
+        }
 
-        if (is_array($value)) {
-            foreach ($value as $key => $argument) {
-                $value[$key] = strtolower($argument);
+        if (!isset($this->headers[$name])) {
+            return $this->withHeader($name, $value);
+        }
+
+        $clone = clone $this;
+
+        if (is_array($clone->headers[$name])) {
+            if (is_string($value)) {
+                $clone->headers[$name][] = $value;
             }
-        } else {
-            $value[] = strtolower($value);
+            
+            if (is_array($value)) {
+                $clone->headers[$name] = array_merge($clone->headers[$name], $value);
+            }
         }
 
-        if (empty($this->headers[$name])) {
-            $this->headers[$name] = $value;
-        } else {
-            $this->headers[$name][] = $value;
+        if (is_string($clone->headers[$name])) {
+            $headerOldValue = $clone->headers[$name];
+            $clone->headers[$name] = [];
+            $clone->headers[$name][] = $headerOldValue;
+            $clone->headers[$name][] = $value;
         }
 
-        return $this;
+        return $clone;
     }
 
     public function withoutHeader($name)
