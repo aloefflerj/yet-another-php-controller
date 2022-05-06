@@ -7,24 +7,27 @@ use Aloefflerj\YetAnotherController\Controller\PSR\StreamInterface;
 
 class Message implements MessageInterface
 {
+    use Headers;
 
+    /**
+     * @var string|array[]
+     */
+    private $headers;
     private string $protocolVersion;
-
-    private array $headers;
-
     private $body;
 
     public function __construct()
     {
         $this->protocolVersion = '1.0';
+        $this->headers = [];
     }
 
-    public function getProtocolVersion():string
+    public function getProtocolVersion(): string
     {
         return $this->protocolVersion;
     }
 
-    public function withProtocolVersion(string $version): static
+    public function withProtocolVersion(string $version): self
     {
         $clone = clone $this;
         $clone->protocolVersion = $version;
@@ -37,13 +40,13 @@ class Message implements MessageInterface
         return $this->headers;
     }
 
-    public function hasHeader($name)
+    public function hasHeader($name): bool
     {
-        if (!empty($name) && array_key_exists($name, $this->headers)) {
-            return true;
+        if (empty($name) || !array_key_exists($name, $this->headers)) {
+            return false;
         }
 
-        return false;
+        return true;
     }
 
     public function getHeader($name)
@@ -68,27 +71,23 @@ class Message implements MessageInterface
         return '';
     }
 
-    public function withHeader($name, $value)
+    /**
+     * @param string $name
+     * @param string|string[] $value
+     * @throws \InvalidArgumentException
+     * @return self
+     */
+    public function withHeader($name, $value): self
     {
-
-        $name = strtolower($name);
-
-        if (is_array($value)) {
-            foreach ($value as $key => $argument) {
-                $value[$key] = strtolower($argument);
-            }
-        } else {
-            $value = strtolower($value);
+        if (!in_array(strtolower($name), $this->getValidHeaders())) {
+            throw new \InvalidArgumentException('This header name does not exists');
         }
-
-        // throw new \InvalidArgumentException();
+        
         $clone = clone $this;
-
-        $clone->headers[$name] = $value;
-
+        $clone->headers = [$name => $value];
         return $clone;
     }
-    
+
     public function withAddedHeader($name, $value)
     {
         $name = strtolower($name);
@@ -98,24 +97,23 @@ class Message implements MessageInterface
                 $value[$key] = strtolower($argument);
             }
         } else {
-            $value = strtolower($value);
+            $value[] = strtolower($value);
         }
 
-        if(empty($this->headers[$name])) {
+        if (empty($this->headers[$name])) {
             $this->headers[$name] = $value;
-        }else {
+        } else {
             $this->headers[$name][] = $value;
         }
 
         return $this;
-
     }
 
     public function withoutHeader($name)
     {
         $name = strtolower($name);
 
-        if(empty($this->headers[$name])) {
+        if (empty($this->headers[$name])) {
             //throw new exception
         }
 
@@ -138,6 +136,5 @@ class Message implements MessageInterface
         $clone->body = $body;
 
         return $clone;
-
     }
 }
