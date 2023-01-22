@@ -2,9 +2,9 @@
 
 namespace Aloefflerj\YetAnotherController\Controller\Http;
 
-use Aloefflerj\YetAnotherController\Controller\PSR\UriInterface;
+use Psr\Http\Message\UriInterface;
 
-class Uri
+class Uri implements UriInterface
 // class Uri implements UriInterface
 {
     use Schemes;
@@ -44,10 +44,7 @@ class Uri
         return $this->scheme;
     }
 
-    /**
-     * @throws \InvalidArgumentException 
-     */
-    public function withScheme(string $scheme): self
+    public function withScheme($scheme): self
     {
         if (!preg_match(
             '/^[\da-z][\da-z\-]{1,20}$/',
@@ -66,7 +63,7 @@ class Uri
         return $clone;
     }
 
-    public function withUserInfo(string $user, ?string $password): self
+    public function withUserInfo($user, $password = '')
     {
         $clone = clone $this;
         $clone->userInfo = "{$user}:{$password}";
@@ -74,10 +71,7 @@ class Uri
         return $clone;
     }
 
-    /**
-     * @throws \InvalidArgumentException
-     */
-    public function withHost(string $host): self
+    public function withHost($host): self
     {
         if (!preg_match(
             '/^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$/',
@@ -92,10 +86,7 @@ class Uri
         return $clone;
     }
 
-    /**
-     * @throws \InvalidArgumentException
-     */
-    public function withPort(?int $port): self
+    public function withPort($port): self
     {
         if (!is_null($port) && !preg_match('/^\d{1,4}$/', $port)) {
             throw new \InvalidArgumentException('Invalid uri port');
@@ -107,10 +98,7 @@ class Uri
         return $clone;
     }
 
-    /**
-     * @throws \InvalidArgumentException
-     */
-    public function withPath(string $path): self
+    public function withPath($path): self
     {
         if (!preg_match('/(\/[a-z0-9]*).*/', $path)) {
             throw new \InvalidArgumentException('Invalid uri path');
@@ -122,10 +110,7 @@ class Uri
         return $clone;
     }
 
-    /**
-     * @throws \InvalidArgumentException
-     */
-    public function withQuery(string $query): self
+    public function withQuery($query): self
     {
         if (!preg_match('/^([^=]+=[^=]+&)+[^=]+(=[^=]+)?$/', $query)) {
             throw new \InvalidArgumentException('Invalid uri query');
@@ -137,7 +122,7 @@ class Uri
         return $clone;
     }
 
-    public function withFragment(string $fragment): self
+    public function withFragment($fragment): self
     {
         $fragment = filter_var($fragment);
 

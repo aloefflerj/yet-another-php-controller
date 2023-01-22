@@ -2,8 +2,8 @@
 
 namespace Aloefflerj\YetAnotherController\Controller\Http;
 
-use Aloefflerj\YetAnotherController\Controller\PSR\MessageInterface;
-use Aloefflerj\YetAnotherController\Controller\PSR\StreamInterface;
+use Psr\Http\Message\MessageInterface;
+use Psr\Http\Message\StreamInterface;
 
 class Message implements MessageInterface
 {
@@ -27,7 +27,11 @@ class Message implements MessageInterface
         return $this->protocolVersion;
     }
 
-    public function withProtocolVersion(string $version): self
+    /**
+     * @param string $version
+     * @return static
+     */
+    public function withProtocolVersion($version): static
     {
         $clone = clone $this;
         $clone->protocolVersion = $version;
@@ -77,7 +81,7 @@ class Message implements MessageInterface
      * @throws \InvalidArgumentException
      * @return self
      */
-    public function withHeader($name, $value): self
+    public function withHeader($name, $value): static
     {
         if (!in_array(strtolower($name), $this->getValidHeaders())) {
             throw new \InvalidArgumentException('This header name does not exists');
@@ -104,7 +108,7 @@ class Message implements MessageInterface
             if (is_string($value)) {
                 $clone->headers[$name][] = $value;
             }
-            
+
             if (is_array($value)) {
                 $clone->headers[$name] = array_merge($clone->headers[$name], $value);
             }

@@ -2,7 +2,7 @@
 
 namespace Aloefflerj\YetAnotherController\Controller\Http;
 
-use Aloefflerj\YetAnotherController\Controller\PSR\StreamInterface;
+use Psr\Http\Message\StreamInterface;
 
 class Stream implements StreamInterface
 {
@@ -10,6 +10,8 @@ class Stream implements StreamInterface
     private bool $writable;
     private bool $readable;
     private ?int $size;
+    private $seekable;
+    private array $meta;
 
     /**
      * @throws \InvalidArgumentException
