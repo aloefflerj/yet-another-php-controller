@@ -88,7 +88,7 @@ class Message implements MessageInterface
         }
 
         $clone = clone $this;
-        $clone->headers = [$name => $value];
+        $clone->headers += [$name => $value];
         return $clone;
     }
 
@@ -98,11 +98,11 @@ class Message implements MessageInterface
             throw new \InvalidArgumentException('This header name does not exists');
         }
 
-        if (!isset($this->headers[$name])) {
-            return $this->withHeader($name, $value);
-        }
-
         $clone = clone $this;
+        
+        if (!isset($this->headers[$name])) {
+            return $clone->withHeader($name, $value);
+        }
 
         if (is_array($clone->headers[$name])) {
             if (is_string($value)) {
