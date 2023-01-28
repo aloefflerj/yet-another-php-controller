@@ -31,14 +31,14 @@ class MessageTest extends TestCase
         $message = $message->withHeader('user-agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)');
 
         $settedHeader = [
-            'content-type' => 'application/json',
-            'user-agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'
+            'content-type' => ['application/json'],
+            'user-agent' => ['Mozilla/5.0 (Windows NT 10.0; Win64; x64)']
         ];
 
         $this->assertEquals($settedHeader, $message->getHeaders());
 
         $message = $message->withHeader('content-type', 'text/html');
-        $settedHeader['content-type'] = 'text/html';
+        $settedHeader['content-type'] = ['text/html'];
         
         $this->assertEquals($settedHeader, $message->getHeaders());
     }

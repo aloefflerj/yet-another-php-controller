@@ -88,7 +88,11 @@ class Message implements MessageInterface
         }
 
         $clone = clone $this;
-        $clone->headers += [$name => $value];
+        
+        if (!is_array($value))
+            $value = [$value];
+        
+        $clone->headers[$name] = $value;
         return $clone;
     }
 
