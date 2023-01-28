@@ -26,7 +26,7 @@ class MessageTest extends TestCase
         $this->assertEquals(false, $message->hasHeader('content-type'));
         $this->assertEquals([], $message->getHeader('content-type'));
         $this->assertEquals('', $message->getHeaderLine('content-type'));
-
+        
         $message = $message->withHeader('content-type', 'application/json');
         $message = $message->withHeader('user-agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)');
 
@@ -35,6 +35,11 @@ class MessageTest extends TestCase
             'user-agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'
         ];
 
+        $this->assertEquals($settedHeader, $message->getHeaders());
+
+        $message = $message->withHeader('content-type', 'text/html');
+        $settedHeader['content-type'] = 'text/html';
+        
         $this->assertEquals($settedHeader, $message->getHeaders());
     }
 }
