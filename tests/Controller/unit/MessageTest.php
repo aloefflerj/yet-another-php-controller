@@ -46,5 +46,11 @@ class MessageTest extends TestCase
         $settedHeader['origin'] = ['127.0.0.1:80', '127.0.0.1:443'];
         $message = $message->withAddedHeader('origin', ['127.0.0.1:80', '127.0.0.1:443']);
         $this->assertEquals($settedHeader, $message->getHeaders());
+
+        unset($settedHeader['origin']);
+        $message = $message->withoutHeader('origin');
+        $this->assertEquals($settedHeader, $message->getHeaders());
+        $message = $message->withoutHeader('this-does-not-exists');
+        $this->assertEquals($settedHeader, $message->getHeaders());
     }
 }
