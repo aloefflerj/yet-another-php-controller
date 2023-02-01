@@ -53,4 +53,16 @@ class MessageTest extends TestCase
         $message = $message->withoutHeader('this-does-not-exists');
         $this->assertEquals($settedHeader, $message->getHeaders());
     }
+
+    public function testBody(): void
+    {
+        $message = new Message();
+        $stream = new Stream(fopen('php://temp', 'r+'));
+
+        $michaelFamousSaying = 'You miss 100% of the shots you don\'t take';
+        $stream->write($michaelFamousSaying);
+
+        $message = $message->withBody($stream);
+        $this->assertEquals($michaelFamousSaying, $message->getBody());
+    }
 }
