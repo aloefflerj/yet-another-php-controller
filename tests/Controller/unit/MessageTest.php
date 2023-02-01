@@ -29,17 +29,22 @@ class MessageTest extends TestCase
         
         $message = $message->withHeader('content-type', 'application/json');
         $message = $message->withHeader('user-agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)');
-
         $settedHeader = [
             'content-type' => ['application/json'],
             'user-agent' => ['Mozilla/5.0 (Windows NT 10.0; Win64; x64)']
         ];
-
         $this->assertEquals($settedHeader, $message->getHeaders());
 
         $message = $message->withHeader('content-type', 'text/html');
         $settedHeader['content-type'] = ['text/html'];
+        $this->assertEquals($settedHeader, $message->getHeaders());
         
+        $settedHeader['content-type'][] = 'application/json';
+        $message = $message->withAddedHeader('content-type', 'application/json');
+        $this->assertEquals($settedHeader, $message->getHeaders());
+        
+        $settedHeader['origin'] = ['127.0.0.1:80', '127.0.0.1:443'];
+        $message = $message->withAddedHeader('origin', ['127.0.0.1:80', '127.0.0.1:443']);
         $this->assertEquals($settedHeader, $message->getHeaders());
     }
 }
