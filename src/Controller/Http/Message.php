@@ -121,11 +121,11 @@ class Message implements MessageInterface
     {
         $name = strtolower($name);
 
-        if (empty($this->headers[$name])) {
-            //throw new exception
-        }
-
         $clone = clone $this;
+        
+        if (!isset(($this->headers[$name]))) {
+            return $clone;
+        }
 
         unset($clone->headers[$name]);
 
