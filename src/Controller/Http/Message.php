@@ -2,8 +2,8 @@
 
 namespace Aloefflerj\YetAnotherController\Controller\Http;
 
-use Psr\Http\Message\MessageInterface;
-use Psr\Http\Message\StreamInterface;
+use Aloefflerj\YetAnotherController\Controller\PSR\MessageInterface;
+use Aloefflerj\YetAnotherController\Controller\PSR\StreamInterface;
 
 class Message implements MessageInterface
 {
@@ -88,10 +88,10 @@ class Message implements MessageInterface
         }
 
         $clone = clone $this;
-        
+
         if (!is_array($value))
             $value = [$value];
-        
+
         $clone->headers[$name] = $value;
         return $clone;
     }
@@ -103,27 +103,16 @@ class Message implements MessageInterface
         }
 
         $clone = clone $this;
-        
+
         if (!isset($this->headers[$name])) {
             return $clone->withHeader($name, $value);
         }
 
-        if (is_array($clone->headers[$name])) {
-            if (is_string($value)) {
-                $clone->headers[$name][] = $value;
-            }
-
-            if (is_array($value)) {
-                $clone->headers[$name] = array_merge($clone->headers[$name], $value);
-            }
+        if (!is_array($value)) {
+            $value = [$value];
         }
 
-        if (is_string($clone->headers[$name])) {
-            $headerOldValue = $clone->headers[$name];
-            $clone->headers[$name] = [];
-            $clone->headers[$name][] = $headerOldValue;
-            $clone->headers[$name][] = $value;
-        }
+        $clone->headers[$name] = array_merge($clone->headers[$name], $value);
 
         return $clone;
     }
