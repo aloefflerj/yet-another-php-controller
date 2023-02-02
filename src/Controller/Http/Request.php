@@ -24,6 +24,19 @@ class Request extends Message #implements RequestInterface
         $this->version = $version;
     }
 
+    public function getMethod()
+    {
+        return $this->method->value;
+    }
+
+    public function withMethod($method)
+    {
+        $clone = clone $this;
+        $clone->setMethod($method);
+
+        return $clone;
+    }
+
     private function setMethod(string | Method $method): void
     {
         $this->assertMethod($method);
@@ -37,17 +50,18 @@ class Request extends Message #implements RequestInterface
         $this->method = $method;
     }
 
-    public function getMethod()
+    private function assertMethod(string | Method $method): void
     {
-        return $this->method->value;
-    }
+        if (is_a($method, Method::class)) {
+            return;
+        }
 
-    public function withMethod($method)
-    {
-        $clone = clone $this;
-        $clone->setMethod($method);
-
-        return $clone;
+        $method = trim($method);
+        $method = strtoupper($method);
+        
+        if (!in_array($method, Method::getAllPossibleValues())) {
+            throw new \Exception("Method '{$method}' is not a valid http method.");
+        }
     }
 
     private function assertMethod(string | Method $method): void
