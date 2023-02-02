@@ -6,6 +6,7 @@ namespace Aloefflerj\YetAnotherController;
 
 use Aloefflerj\YetAnotherController\Controller\Http\Method;
 use Aloefflerj\YetAnotherController\Controller\Http\Request;
+use Aloefflerj\YetAnotherController\Controller\Http\Uri;
 use PHPUnit\Framework\TestCase;
 
 class RequestTest extends TestCase
@@ -29,5 +30,30 @@ class RequestTest extends TestCase
 
         $request = $request->withMethod(Method::PUT);
         $this->assertEquals('PUT', $request->getMethod());
+    }
+
+    public function testUri(): void
+    {
+        $request = new Request('GET');
+        $this->assertInstanceOf(Uri::class, $request->getUri());
+        $this->assertEquals('', strval($request->getUri()));
+        
+        $request = new Request('GET', 'http://test.com');
+        $this->assertInstanceOf(Uri::class, $request->getUri());
+        $this->assertEquals('http://test.com', strval($request->getUri()));
+        
+        $request = $request->withUri('http://newtest.com');
+        $this->assertInstanceOf(Uri::class, $request->getUri());
+        $this->assertEquals('http://newtest.com', strval($request->getUri()));
+        
+        $uri = new Uri();
+        $request = new Request('GET', $uri);
+        $this->assertInstanceOf(Uri::class, $request->getUri());
+        $this->assertEquals('', strval($request->getUri()));
+
+        $uri = new Uri('http://yetanothertest.com');
+        $request = new Request('GET', $uri);
+        $this->assertInstanceOf(Uri::class, $request->getUri());
+        $this->assertEquals('http://yetanothertest.com', strval($request->getUri()));
     }
 }
