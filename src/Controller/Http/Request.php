@@ -35,6 +35,11 @@ class Request extends Message #implements RequestInterface
         $this->method = $method;
     }
 
+    public function getMethod()
+    {
+        return $this->method->value;
+    }
+
     private function assertMethod(string | Method $method): void
     {
         if (is_a($method, Method::class)) {
