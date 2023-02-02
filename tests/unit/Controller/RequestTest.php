@@ -15,5 +15,11 @@ class RequestTest extends TestCase
     {
         $request = new Request('GET');
         $this->assertEquals('GET', $request->getMethod());
+        
+        $request = $request->withMethod('POST');
+        $this->assertEquals('POST', $request->getMethod());
+
+        $request = $request->withMethod('put');
+        $this->assertEquals('PUT', $request->getMethod());
     }
 }
