@@ -29,6 +29,8 @@ class Request extends Message #implements RequestInterface
         $this->assertMethod($method);
 
         if (is_string($method)) {
+            $method = trim($method);
+            $method = strtoupper($method);
             $method = Method::tryFrom($method);    
         }
         
