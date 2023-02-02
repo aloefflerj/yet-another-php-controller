@@ -25,6 +25,12 @@ class Uri implements UriInterface
      */
     public function __construct(string $uri = "")
     {
+        if (empty($uri)) {
+            $this->completeUri = $uri;
+            $this->fillEmptyValues();
+            return;
+        }
+
         $validUri = $this->assertUri($uri);
 
         if (!$validUri) {
@@ -37,6 +43,10 @@ class Uri implements UriInterface
 
     public function __toString()
     {
+        if (empty(trim($this->completeUri))) {
+            return '';
+        }
+
         return $this->glueElements();
     }
 
@@ -170,6 +180,19 @@ class Uri implements UriInterface
 
     # HELPER FUNCTIONS #
 
+    private function fillEmptyValues(): void
+    {
+        $this->scheme       = '';
+        $this->authority    = '';
+        $this->userInfo     = '';
+        $this->host         = '';
+        $this->port         = null;
+        $this->path         = '';
+        $this->query        = '';
+        $this->fragment     = '';
+        $this->completeUri  = '';
+    }
+
     private function split(): void
     {
         $this->scheme       = explode(':', $this->completeUri)[0];
@@ -186,6 +209,9 @@ class Uri implements UriInterface
     private function splitToAuthority(): string
     {
         $authorityArr = explode(':', $this->completeUri);
+        if (!isset($authorityArr[1]))
+            return '';
+
         $authority = "$authorityArr[1]";
 
         if (isset($authorityArr[2])) {
