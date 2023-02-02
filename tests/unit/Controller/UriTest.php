@@ -53,6 +53,17 @@ class UriTest extends TestCase
             'path' => '/foo/bar.txt',
             'query' => '',
             'fragment' => ''
+        ],
+        4 => [
+            'uri' => '',
+            'scheme' => '',
+            'authority' => '',
+            'userInfo' => '',
+            'host' => '',
+            'port' => '',
+            'path' => '',
+            'query' => '',
+            'fragment' => ''
         ]
     ];
 
