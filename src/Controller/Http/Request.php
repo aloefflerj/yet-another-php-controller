@@ -40,6 +40,14 @@ class Request extends Message #implements RequestInterface
         return $this->method->value;
     }
 
+    public function withMethod($method)
+    {
+        $clone = clone $this;
+        $clone->setMethod($method);
+
+        return $clone;
+    }
+
     private function assertMethod(string | Method $method): void
     {
         if (is_a($method, Method::class)) {
