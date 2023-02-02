@@ -2,12 +2,13 @@
 
 namespace Aloefflerj\YetAnotherController\Controller\Http;
 
+use Aloefflerj\YetAnotherController\Controller\Helpers\UriHelper;
 use Psr\Http\Message\UriInterface;
 
 class Uri implements UriInterface
-// class Uri implements UriInterface
 {
     use Schemes;
+    use UriHelper;
 
     private string $completeUri;
     private string $scheme;
@@ -24,10 +25,10 @@ class Uri implements UriInterface
      */
     public function __construct(string $uri = "")
     {
-        $validUri = preg_match("/\w+:(\/?\/?)[^\s]+/", $uri);
+        $validUri = $this->assertUri($uri);
 
         if (!$validUri) {
-            throw new \Exception('This is not a valid uri');
+            throw new \InvalidArgumentException("'$uri' is not a valid uri");
         }
 
         $this->completeUri = $uri;
