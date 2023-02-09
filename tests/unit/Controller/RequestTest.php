@@ -74,7 +74,7 @@ class RequestTest extends TestCase
 
     public function testRequestTarget(): void
     {
-        $request = new Request(new Uri('http://test.com'));
+        $request = new Request('GET', new Uri('http://test.com'));
         $this->assertEquals('http://test.com', $request->getRequestTarget());
         
         $request = $request->withRequestTarget('http://newtest.com');
