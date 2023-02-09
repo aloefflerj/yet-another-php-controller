@@ -45,7 +45,7 @@ class RequestTest extends TestCase
         $request = $request->withUri(new Uri('http://newtest.com'));
         $this->assertInstanceOf(Uri::class, $request->getUri());
         $this->assertEquals('http://newtest.com/', strval($request->getUri()));
-        
+
         $uri = new Uri();
         $request = new Request('GET', $uri);
         $this->assertInstanceOf(Uri::class, $request->getUri());
