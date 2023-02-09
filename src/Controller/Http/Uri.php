@@ -178,6 +178,11 @@ class Uri implements UriInterface
         return $this->fragment;
     }
 
+    public function getCompleteUri(): string
+    {
+        return $this->completeUri;
+    }
+
     # HELPER FUNCTIONS #
 
     private function fillEmptyValues(): void

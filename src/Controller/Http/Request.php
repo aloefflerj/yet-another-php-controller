@@ -13,6 +13,7 @@ class Request extends Message #implements RequestInterface
 
     private Method $method;
     private UriInterface $uri;
+    private string $requestTarget;
 
     public function __construct(
         string | Method $method,
@@ -26,6 +27,7 @@ class Request extends Message #implements RequestInterface
         $this->stream = $stream;
         $this->headers = $headers;
         $this->version = $version;
+        $this->requestTarget = strval($this->uri);
     }
 
     public function getMethod()
@@ -94,5 +96,22 @@ class Request extends Message #implements RequestInterface
         }
 
         $this->uri = $uri;
+    }
+
+    public function getRequestTarget()
+    {
+        $requestTarget = $this->requestTarget;
+        if (!preg_match('/^.*\/\/.*\/$/', $requestTarget)) {
+            return $requestTarget;
+        }
+        return rtrim($requestTarget, '/');
+    }
+
+    public function withRequestTarget(string $requestTarget)
+    {
+        $clone = clone $this;
+        $clone->requestTarget = $requestTarget;
+
+        return $clone;
     }
 }
