@@ -46,6 +46,21 @@ class RequestTest extends TestCase
         $this->assertInstanceOf(Uri::class, $request->getUri());
         $this->assertEquals('http://newtest.com/', strval($request->getUri()));
 
+        $request = new Request('GET', 'http://must.vanish.away');
+        $request = $request->withUri(new Uri('http://must.remain.here'));
+        $this->assertInstanceOf(Uri::class, $request->getUri());
+        $this->assertEquals('must.remain.here', $request->getUri()->getHost());
+
+        $request = new Request('GET', 'http://must.remain.here');
+        $request = $request->withUri(new Uri('http://must.vanish.away'), true);
+        $this->assertInstanceOf(Uri::class, $request->getUri());
+        $this->assertEquals('must.remain.here', $request->getUri()->getHost());
+
+        $request = new Request('GET');
+        $request = $request->withUri(new Uri('http://must.remain.here'), true);
+        $this->assertInstanceOf(Uri::class, $request->getUri());
+        $this->assertEquals('must.remain.here', $request->getUri()->getHost());
+        
         $uri = new Uri();
         $request = new Request('GET', $uri);
         $this->assertInstanceOf(Uri::class, $request->getUri());
