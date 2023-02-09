@@ -40,11 +40,11 @@ class RequestTest extends TestCase
         
         $request = new Request('GET', 'http://test.com');
         $this->assertInstanceOf(Uri::class, $request->getUri());
-        $this->assertEquals('http://test.com', strval($request->getUri()));
+        $this->assertEquals('http://test.com/', strval($request->getUri()));
         
-        $request = $request->withUri('http://newtest.com');
+        $request = $request->withUri(new Uri('http://newtest.com'));
         $this->assertInstanceOf(Uri::class, $request->getUri());
-        $this->assertEquals('http://newtest.com', strval($request->getUri()));
+        $this->assertEquals('http://newtest.com/', strval($request->getUri()));
         
         $uri = new Uri();
         $request = new Request('GET', $uri);
@@ -54,6 +54,6 @@ class RequestTest extends TestCase
         $uri = new Uri('http://yetanothertest.com');
         $request = new Request('GET', $uri);
         $this->assertInstanceOf(Uri::class, $request->getUri());
-        $this->assertEquals('http://yetanothertest.com', strval($request->getUri()));
+        $this->assertEquals('http://yetanothertest.com/', strval($request->getUri()));
     }
 }
