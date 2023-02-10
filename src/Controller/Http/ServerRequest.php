@@ -26,4 +26,26 @@ class ServerRequest extends Request #implements ServerRequestInterface
         $clone = clone $this;
         return $clone;
     }
+
+    public function getQueryParams()
+    {
+        $queryParams = $this->getUri()->getQuery();
+        if (empty($queryParams))
+            return [];
+
+        preg_match_all('/([^[\?|&]+)=([^&]*)/', $queryParams, $queryParamsMatches);
+        $queryParamsMatches = $queryParamsMatches[0];
+        
+        $formattedQueryParams = [];
+        foreach ($queryParamsMatches as $queryKeyAndValue) {
+            [$queryKey, $queryValue] = explode('=', $queryKeyAndValue);
+            $formattedQueryParams[$queryKey] = $queryValue;
+        }
+
+        return $formattedQueryParams;
+    }
+
+    public function withQueryParams(array $query)
+    {
+    }
 }
