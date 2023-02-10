@@ -30,4 +30,22 @@ class ServerRequestTest extends TestCase
         $serverRequest = $serverRequest->withCookieParams(['planet' => 'venus']);
         $this->assertEquals(['planet' => 'venus'], $serverRequest->getCookieParams());
     }
+
+    public function testQueryParams()
+    {
+        $serverRequest = new ServerRequest('GET', new Uri('http://universe.com?star=sun?galaxy=milky-way'));
+        $this->assertEquals([
+            'star' => 'sun',
+            'galaxy' => 'milky-wat'
+        ], $serverRequest->getQueryParams());
+
+        $serverRequest = $serverRequest->withQueryParams([
+            'star' => 'alpheratz',
+            'galaxy' => 'andromeda'
+        ]);
+        $this->assertEquals([
+            'star' => 'alpheratz',
+            'galaxy' => 'andromeda'
+        ], $serverRequest->getQueryParams());
+    }
 }
