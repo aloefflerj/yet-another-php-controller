@@ -14,4 +14,16 @@ class ServerRequest extends Request #implements ServerRequestInterface
     {
         return $_SERVER;
     }
+
+    public function getCookieParams()
+    {
+        return $_COOKIE;
+    }
+
+    public function withCookieParams(array $cookies)
+    {
+        $_COOKIE = $cookies;
+        $clone = clone $this;
+        return $clone;
+    }
 }
