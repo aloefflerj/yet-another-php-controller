@@ -9,12 +9,9 @@ class Message implements MessageInterface
 {
     use Headers;
 
-    /**
-     * @var string|array[]
-     */
-    private $headers;
-    private string $protocolVersion;
-    private $body;
+    protected array $headers;
+    protected string $protocolVersion;
+    protected StreamInterface $body;
 
     public function __construct()
     {

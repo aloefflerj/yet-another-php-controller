@@ -16,8 +16,14 @@ class Stream implements StreamInterface
     /**
      * @throws \InvalidArgumentException
      */
-    public function __construct($resource)
+    public function __construct($resource = null)
     {
+        $nullResource = is_null($resource);
+        if ($nullResource) {
+            $resource = fopen("php://stdin","r");
+            echo '';
+        }
+        
         if (!is_resource($resource)) {
             throw new \InvalidArgumentException('Argument must be a valid resource type');
         }
@@ -44,6 +50,10 @@ class Stream implements StreamInterface
 
         $this->seekable = $meta['seekable'];
         $this->size = null;
+
+        if ($nullResource) {
+            fclose($resource);
+        }
     }
 
     public function __toString(): string

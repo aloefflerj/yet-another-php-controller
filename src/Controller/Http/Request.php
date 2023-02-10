@@ -7,7 +7,7 @@ use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UriInterface;
 
-class Request extends Message #implements RequestInterface
+class Request extends Message implements RequestInterface
 {
     use UriHelper;
 
@@ -18,15 +18,15 @@ class Request extends Message #implements RequestInterface
     public function __construct(
         string | Method $method,
         string | UriInterface $uri = '',
-        private string | StreamInterface $stream = '',
-        private array $headers = [],
-        private string $version = '1.1'
+        StreamInterface $body = new Stream(),
+        array $headers = [],
+        string $protocolVersion = '1.1'
     ) {
         $this->setMethod($method);
         $this->setUri($uri);
-        $this->stream = $stream;
+        $this->body = $body;
         $this->headers = $headers;
-        $this->version = $version;
+        $this->protocolVersion = $protocolVersion;
         $this->requestTarget = strval($this->uri);
     }
 
@@ -107,7 +107,7 @@ class Request extends Message #implements RequestInterface
         return rtrim($requestTarget, '/');
     }
 
-    public function withRequestTarget(string $requestTarget)
+    public function withRequestTarget($requestTarget)
     {
         $clone = clone $this;
         $clone->requestTarget = $requestTarget;
