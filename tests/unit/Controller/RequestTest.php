@@ -18,19 +18,26 @@ class RequestTest extends TestCase
     public function testConstruct(): void
     {
         $request = new Request('GET');
-        $this->assertEquals('GET', $request->getMethod());
+        $this->assertInstanceOf(Uri::class, $request->getUri());
+        $this->assertEquals('', strval($request->getUri()));
         $this->assertEquals((new Stream()), $request->getBody());
+        $this->assertEquals([], $request->getHeaders());
+        $this->assertEquals('1.1', $request->getProtocolVersion());
         
         $request = new Request('GET', 'http://test.com');
         $this->assertInstanceOf(Uri::class, $request->getUri());
         $this->assertEquals('http://test.com/', strval($request->getUri()));
         $this->assertEquals((new Stream()), $request->getBody());
+        $this->assertEquals([], $request->getHeaders());
+        $this->assertEquals('1.1', $request->getProtocolVersion());
         
         $resource = $this->loadResource();
         $request = new Request('GET', 'http://test.com', (new Stream($resource)));
         $this->assertInstanceOf(Uri::class, $request->getUri());
         $this->assertEquals('http://test.com/', strval($request->getUri()));
         $this->assertEquals((new Stream($resource)), $request->getBody());
+        $this->assertEquals([], $request->getHeaders());
+        $this->assertEquals('1.1', $request->getProtocolVersion());
         fclose($resource);
 
         $resource = $this->loadResource();
@@ -44,6 +51,7 @@ class RequestTest extends TestCase
         $this->assertEquals('http://test.com/', strval($request->getUri()));
         $this->assertEquals((new Stream($resource)), $request->getBody());
         $this->assertEquals(['origin' => '*'], $request->getHeaders());
+        $this->assertEquals('1.1', $request->getProtocolVersion());
         fclose($resource);
 
         $resource = $this->loadResource();
@@ -57,6 +65,7 @@ class RequestTest extends TestCase
         $this->assertInstanceOf(Uri::class, $request->getUri());
         $this->assertEquals('http://test.com/', strval($request->getUri()));
         $this->assertEquals((new Stream($resource)), $request->getBody());
+        $this->assertEquals(['origin' => '*'], $request->getHeaders());
         $this->assertEquals('2.1', $request->getProtocolVersion());
         fclose($resource);
         
