@@ -4,13 +4,64 @@ declare(strict_types=1);
 
 namespace Aloefflerj\YetAnotherController;
 
+use Aloefflerj\YetAnotherController\Controller\Http\Message;
 use Aloefflerj\YetAnotherController\Controller\Http\Method;
 use Aloefflerj\YetAnotherController\Controller\Http\Request;
+use Aloefflerj\YetAnotherController\Controller\Http\Stream;
 use Aloefflerj\YetAnotherController\Controller\Http\Uri;
 use PHPUnit\Framework\TestCase;
 
 class RequestTest extends TestCase
 {
+    const FILE_PATH = __DIR__ . '/StreamDummyFile.txt';
+
+    public function testConstruct(): void
+    {
+        $request = new Request('GET');
+        $this->assertEquals('GET', $request->getMethod());
+        $this->assertEquals((new Stream()), $request->getBody());
+        
+        $request = new Request('GET', 'http://test.com');
+        $this->assertInstanceOf(Uri::class, $request->getUri());
+        $this->assertEquals('http://test.com/', strval($request->getUri()));
+        $this->assertEquals((new Stream()), $request->getBody());
+        
+        $resource = $this->loadResource();
+        $request = new Request('GET', 'http://test.com', (new Stream($resource)));
+        $this->assertInstanceOf(Uri::class, $request->getUri());
+        $this->assertEquals('http://test.com/', strval($request->getUri()));
+        $this->assertEquals((new Stream($resource)), $request->getBody());
+        fclose($resource);
+
+        $resource = $this->loadResource();
+        $request = new Request(
+            'GET',
+            'http://test.com',
+            (new Stream($resource)),
+            ['origin' => '*']
+        );
+        $this->assertInstanceOf(Uri::class, $request->getUri());
+        $this->assertEquals('http://test.com/', strval($request->getUri()));
+        $this->assertEquals((new Stream($resource)), $request->getBody());
+        $this->assertEquals(['origin' => '*'], $request->getHeaders());
+        fclose($resource);
+
+        $resource = $this->loadResource();
+        $request = new Request(
+            'GET',
+            'http://test.com',
+            (new Stream($resource)),
+            ['origin' => '*'],
+            '2.1'
+        );
+        $this->assertInstanceOf(Uri::class, $request->getUri());
+        $this->assertEquals('http://test.com/', strval($request->getUri()));
+        $this->assertEquals((new Stream($resource)), $request->getBody());
+        $this->assertEquals('2.1', $request->getProtocolVersion());
+        fclose($resource);
+        
+    }
+
     public function testMethod(): void
     {
         $request = new Request('GET');
@@ -79,5 +130,11 @@ class RequestTest extends TestCase
         
         $request = $request->withRequestTarget('http://newtest.com');
         $this->assertEquals('http://newtest.com', $request->getRequestTarget());
+    }
+
+    private function loadResource()
+    {
+        $resource = fopen(self::FILE_PATH, 'r');
+        return $resource;
     }
 }
