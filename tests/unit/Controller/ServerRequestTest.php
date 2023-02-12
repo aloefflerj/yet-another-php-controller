@@ -66,7 +66,7 @@ class ServerRequestTest extends TestCase
             'aang' => 'air',
             'katara' => 'water'
         ];
-        $json = json_encode($json, JSON_PRETTY_PRINT);
+        $json = json_encode($jsonStructure, JSON_PRETTY_PRINT);
         $resource = fopen('php://output', 'w');
         fputs($resource, $json);
         fclose($resource);
