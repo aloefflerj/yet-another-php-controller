@@ -31,7 +31,7 @@ class ServerRequestTest extends TestCase
         $this->assertEquals(['planet' => 'venus'], $serverRequest->getCookieParams());
     }
 
-    public function testQueryParams()
+    public function testQueryParams(): void
     {
         $serverRequest = new ServerRequest('GET', new Uri('http://universe.com?star=sun&galaxy=milky-way'));
         $this->assertEquals([
@@ -47,5 +47,31 @@ class ServerRequestTest extends TestCase
             'star' => 'alpheratz',
             'galaxy' => 'andromeda'
         ], $serverRequest->getQueryParams());
+    }
+
+    public function testParsedBody(): void
+    {
+        $serverRequest = new ServerRequest('POST', new Uri('http://test.com'));
+        $serverRequest = $serverRequest->withHeader('Content-Type', 'application/x-www-form-urlencoded');
+        $_POST['key'] = 'value';
+        $this->assertEquals($_POST, $serverRequest->getParsedBody());
+
+        $serverRequest = new ServerRequest('POST', new Uri('http://test.com'));
+        $serverRequest = $serverRequest->withHeader('Content-Type', 'multipart/form-data');
+        $_POST['key'] = 'value';
+        $this->assertEquals($_POST, $serverRequest->getParsedBody());
+
+
+        $jsonStructure = [
+            'aang' => 'air',
+            'katara' => 'water'
+        ];
+        $json = json_encode($json, JSON_PRETTY_PRINT);
+        $resource = fopen('php://output', 'w');
+        fputs($resource, $json);
+        fclose($resource);
+
+        $serverRequest = new ServerRequest('POST', new Uri('http://test.com'), new Stream($resource));
+        $this->assertEquals($jsonStructure, json_decode($serverRequest->getParsedBody()));
     }
 }
