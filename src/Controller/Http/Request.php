@@ -11,9 +11,9 @@ class Request extends Message implements RequestInterface
 {
     use UriHelper;
 
-    private Method $method;
-    private UriInterface $uri;
-    private string $requestTarget;
+    protected Method $method;
+    protected UriInterface $uri;
+    protected string $requestTarget;
 
     public function __construct(
         string | Method $method,

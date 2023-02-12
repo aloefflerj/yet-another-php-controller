@@ -47,5 +47,25 @@ class ServerRequest extends Request #implements ServerRequestInterface
 
     public function withQueryParams(array $query)
     {
+        $clone = clone $this;
+        if (empty($query)) {
+            return $clone;
+        }
+
+        $queryString = '';
+        $firstQuery = true;
+        foreach ($query as $queryKey => $queryValue) {
+            
+            if ($firstQuery) {
+                $queryString .= "?{$queryKey}={$queryValue}";
+                $firstQuery = false;
+                continue;
+            }
+
+            $queryString .= "&{$queryKey}={$queryValue}";
+        }
+        
+        $clone->uri = $clone->uri->withQuery($queryString);
+        return $clone;
     }
 }
