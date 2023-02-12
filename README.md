@@ -6,6 +6,7 @@
     $app->get('/', function ($req, $res, $headerParams, $functionParams) {
         echo 'Welcome home';
     });
+    $app->dispatch();
 ```
 2. Go to your domain home page (example: `localhost:8000/`)
 > outputs: 'Welcome home'
