@@ -33,10 +33,10 @@ class ServerRequestTest extends TestCase
 
     public function testQueryParams()
     {
-        $serverRequest = new ServerRequest('GET', new Uri('http://universe.com?star=sun?galaxy=milky-way'));
+        $serverRequest = new ServerRequest('GET', new Uri('http://universe.com?star=sun&galaxy=milky-way'));
         $this->assertEquals([
             'star' => 'sun',
-            'galaxy' => 'milky-wat'
+            'galaxy' => 'milky-way'
         ], $serverRequest->getQueryParams());
 
         $serverRequest = $serverRequest->withQueryParams([
