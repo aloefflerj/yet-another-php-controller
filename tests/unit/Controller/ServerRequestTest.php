@@ -53,12 +53,12 @@ class ServerRequestTest extends TestCase
     {
         $serverRequest = new ServerRequest('POST', new Uri('http://test.com'));
         $serverRequest = $serverRequest->withHeader('Content-Type', 'application/x-www-form-urlencoded');
-        $_POST['key'] = 'value';
+        $_POST['aang'] = 'air';
         $this->assertEquals($_POST, $serverRequest->getParsedBody());
 
         $serverRequest = new ServerRequest('POST', new Uri('http://test.com'));
         $serverRequest = $serverRequest->withHeader('Content-Type', 'multipart/form-data');
-        $_POST['key'] = 'value';
+        $_POST['katara'] = 'water';
         $this->assertEquals($_POST, $serverRequest->getParsedBody());
 
         $jsonStructure = [
@@ -77,5 +77,25 @@ class ServerRequestTest extends TestCase
         $serverRequest = new ServerRequest('POST', new Uri('http://test.com'), new Stream($resource));
         $serverRequest = $serverRequest->withHeader('Content-Type', 'text/csv');
         $serverRequest->getParsedBody();
+
+        $serverRequest = new ServerRequest('POST', new Uri('http://test.com'));
+        $serverRequest = $serverRequest->withHeader('Content-Type', 'multipart/form-data');
+        unset($_POST);
+        $_POST['aang'] = 'value';
+        $newBody = new \stdClass();
+        $newBody->katara = 'water';
+        $serverRequest = $serverRequest->withParsedBody($newBody);
+        $expectedBody = $_POST + array($newBody);
+        $this->assertEquals($expectedBody, $serverRequest->getParsedBody());
+
+        $serverRequest = new ServerRequest('POST', new Uri('http://test.com'));
+        $serverRequest = $serverRequest->withHeader('Content-Type', 'application/json');
+        $serverRequest = $serverRequest->withParsedBody($jsonStructure);
+        $this->assertEquals((object)$jsonStructure, $serverRequest->getParsedBody());
+
+        $this->expectException(\Exception::class);
+        $serverRequest = new ServerRequest('POST', new Uri('http://test.com'), new Stream($resource));
+        $serverRequest = $serverRequest->withHeader('Content-Type', 'text/csv');
+        $serverRequest = $serverRequest->withParsedBody($jsonStructure);
     }
 }
