@@ -61,7 +61,6 @@ class ServerRequestTest extends TestCase
         $_POST['key'] = 'value';
         $this->assertEquals($_POST, $serverRequest->getParsedBody());
 
-
         $jsonStructure = [
             'aang' => 'air',
             'katara' => 'water'
@@ -73,5 +72,10 @@ class ServerRequestTest extends TestCase
         $serverRequest = new ServerRequest('POST', new Uri('http://test.com'), new Stream($resource));
         $serverRequest = $serverRequest->withHeader('Content-Type', 'application/json');
         $this->assertEquals((object)$jsonStructure, $serverRequest->getParsedBody());
+
+        $this->expectException(\Exception::class);
+        $serverRequest = new ServerRequest('POST', new Uri('http://test.com'), new Stream($resource));
+        $serverRequest = $serverRequest->withHeader('Content-Type', 'text/csv');
+        $serverRequest->getParsedBody();
     }
 }
