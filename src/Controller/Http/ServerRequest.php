@@ -153,6 +153,14 @@ class ServerRequest extends Request #implements ServerRequestInterface
     {
         $clone = clone $this;
         $clone->attributes[$name] = $value;
+
+        return $clone;
+    }
+
+    public function withoutAttribute($name)
+    {
+        $clone = clone $this;
+        unset($clone->attributes[$name]);
         
         return $clone;
     }
