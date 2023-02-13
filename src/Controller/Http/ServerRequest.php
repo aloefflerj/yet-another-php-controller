@@ -71,18 +71,69 @@ class ServerRequest extends Request #implements ServerRequestInterface
 
     public function getParsedBody()
     {
-        if (
-            in_array('application/x-www-form-urlencoded', $this->getHeader('Content-Type')) ||
-            in_array('multipart/form-data', $this->getHeader('Content-Type'))
-        ) {
-            return $_POST;
+        if ($this->isOfFormContentType()) {
+            return (object)$_POST;
         }
 
-        if (in_array('application/json', $this->getHeader('Content-Type'))) {
+        if ($this->isOfJsonContentType()) {
             return (object)json_decode($this->getBody());
         }
 
         throw new \Exception("There is currently no implementation to parse content of type '{$this->getHeader('Content-Type')[0]}'");
         return null;
+    }
+
+    public function withParsedBody($data)
+    {
+        $data = match (gettype($data)) {
+            'object' => $this->parseObjectBody($data),
+            'array' => $this->parseArrayBody($data),
+            'null' => $data,
+            default => throw new \InvalidArgumentException("Data to the parsed body should be an array, object or null")
+        };
+
+        $clone = clone $this->withBody($data);
+        return $clone;
+    }
+
+    private function parseObjectBody(object $objectData): object
+    {
+        if ($this->isOfFormContentType()) {
+            $arrayData = (array)$objectData;
+            return $this->parseArrayBody($arrayData);
+        }
+
+        if ($this->isOfJsonContentType()) {
+            return json_encode($objectData);
+        }
+
+        throw new \InvalidArgumentException("Data to the parsed body should be an array, object or null");
+    }
+
+    private function parseArrayBody(array $arrayData): object
+    {
+        if ($this->isOfFormContentType()) {
+            foreach ($arrayData as $dataKey => $dataValue) {
+                $_POST[$dataKey] = $dataValue;
+            }
+            return (object)$_POST;
+        }
+
+        if ($this->isOfJsonContentType()) {
+            return json_encode($arrayData);
+        }
+
+        throw new \InvalidArgumentException("Data to the parsed body should be an array, object or null");
+    }
+
+    private function isOfFormContentType()
+    {
+        return in_array('application/x-www-form-urlencoded', $this->getHeader('Content-Type')) ||
+            in_array('multipart/form-data', $this->getHeader('Content-Type'));
+    }
+
+    private function isOfJsonContentType()
+    {
+        return in_array('application/json', $this->getHeader('Content-Type'));
     }
 }
