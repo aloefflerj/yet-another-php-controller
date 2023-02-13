@@ -130,5 +130,8 @@ class ServerRequestTest extends TestCase
         $attributeValue =  $serverRequest->getAttribute('host', '[empty-host]');
         $this->assertEquals('localhost', $attributeValue);
 
+        $serverRequest = $serverRequest->withoutAttribute('host');
+        $defaultAttributeValue = $serverRequest->getAttribute('host', '[empty-host]');
+        $this->assertEquals('[empty-host]', $defaultAttributeValue);
     }
 }
