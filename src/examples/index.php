@@ -10,6 +10,7 @@ require_once dirname(__DIR__, 2) . '/vendor/autoload.php';
 
 use Aloefflerj\YetAnotherController\Controller\BaseController;
 use Aloefflerj\YetAnotherController\Controller\Http\Message;
+use Aloefflerj\YetAnotherController\Controller\Http\ServerRequest;
 use Aloefflerj\YetAnotherController\Controller\Http\Stream;
 use Aloefflerj\YetAnotherController\Controller\Http\Uri;
 // use Aloefflerj\YetAnotherController\Controller\Url\UrlHandler;
@@ -166,6 +167,12 @@ $app->get('/http/uri', function ($req, $res) {
 
     $uriClone = $uri->withScheme('https');
     echo $uriClone->getScheme();
+});
+
+$app->post('/request/with-body', function ($req, $res) {
+    $serverRequest = new ServerRequest('POST', 'http://localhost:8000/request/with-body', new Stream());
+    $serverRequest = $serverRequest->withHeader('Content-Type', 'application/x-www-form-urlencoded');
+    var_dump($serverRequest->getParsedBody());
 });
 
 $app->dispatch();
