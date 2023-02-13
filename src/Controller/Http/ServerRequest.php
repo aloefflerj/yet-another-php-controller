@@ -10,6 +10,8 @@ use Psr\Http\Message\UriInterface;
 
 class ServerRequest extends Request #implements ServerRequestInterface
 {
+    private array $attributes = [];
+
     public function getServerParams()
     {
         return $_SERVER;
@@ -135,5 +137,23 @@ class ServerRequest extends Request #implements ServerRequestInterface
     private function isOfJsonContentType()
     {
         return in_array('application/json', $this->getHeader('Content-Type'));
+    }
+
+    public function getAttributes()
+    {
+        return $this->attributes;
+    }
+
+    public function getAttribute($name, $default = null)
+    {
+        return isset($this->attributes[$name]) ? $this->attributes[$name] : $default;
+    }
+
+    public function withAttribute($name, $value)
+    {
+        $clone = clone $this;
+        $clone->attributes[$name] = $value;
+        
+        return $clone;
     }
 }
