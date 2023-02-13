@@ -72,15 +72,10 @@ class Message implements MessageInterface
         return '';
     }
 
-    /**
-     * @param string $name
-     * @param string|string[] $value
-     * @throws \InvalidArgumentException
-     * @return self
-     */
     public function withHeader($name, $value): static
     {
-        if (!in_array(strtolower($name), $this->getValidHeaders())) {
+        $name = strtolower($name);
+        if (!in_array($name, $this->getValidHeaders())) {
             throw new \InvalidArgumentException('This header name does not exists');
         }
 
