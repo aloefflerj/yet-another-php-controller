@@ -35,7 +35,7 @@ class ServerRequest extends Request #implements ServerRequestInterface
 
         preg_match_all('/([^[\?|&]+)=([^&]*)/', $queryParams, $queryParamsMatches);
         $queryParamsMatches = $queryParamsMatches[0];
-        
+
         $formattedQueryParams = [];
         foreach ($queryParamsMatches as $queryKeyAndValue) {
             [$queryKey, $queryValue] = explode('=', $queryKeyAndValue);
@@ -55,7 +55,7 @@ class ServerRequest extends Request #implements ServerRequestInterface
         $queryString = '';
         $firstQuery = true;
         foreach ($query as $queryKey => $queryValue) {
-            
+
             if ($firstQuery) {
                 $queryString .= "?{$queryKey}={$queryValue}";
                 $firstQuery = false;
@@ -64,8 +64,24 @@ class ServerRequest extends Request #implements ServerRequestInterface
 
             $queryString .= "&{$queryKey}={$queryValue}";
         }
-        
+
         $clone->uri = $clone->uri->withQuery($queryString);
         return $clone;
+    }
+
+    public function getParsedBody()
+    {
+        if (
+            in_array('application/x-www-form-urlencoded', $this->getHeader('Content-Type')) ||
+            in_array('multipart/form-data', $this->getHeader('Content-Type'))
+        ) {
+            return $_POST;
+        }
+
+        if (in_array('application/json', $this->getHeader('Content-Type'))) {
+            return (object)json_decode($this->getBody());
+        }
+
+        return (array)$this->getBody();
     }
 }
