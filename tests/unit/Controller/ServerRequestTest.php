@@ -103,4 +103,32 @@ class ServerRequestTest extends TestCase
         $serverRequest = $serverRequest->withHeader('Content-Type', 'text/csv');
         $serverRequest = $serverRequest->withParsedBody($jsonStructure);
     }
+
+    public function testAttributes(): void
+    {
+        $serverRequest = new ServerRequest('POST');
+        $_SESSION['user_name'] = 'aang';
+        $_SESSION['user_role'] = 'airbender';
+        $_SERVER['REMOTE_ADDR'] = '127.0.0.1';
+
+        $serverRequest = $serverRequest->
+            withAttribute('session', $_SESSION)->
+            withAttribute('ip_address', $_SERVER['REMOTE_ADDR']);
+
+        $attributes = $serverRequest->getAttributes();
+        $this->assertEquals([
+            'user_name' => 'aang',
+            'user_role' => 'airbender'
+        ], $serverRequest->getAttributes()['session']);
+
+        $this->assertEquals('127.0.0.1', $serverRequest->getAttributes()['ip_address']);
+
+        $defaultAttributeValue = $serverRequest->getAttribute('host', '[empty-host]');
+        $this->assertEquals('[empty-host]', $defaultAttributeValue);
+
+        $serverRequest = $serverRequest->withAttribute('host', 'localhost');
+        $attributeValue =  $serverRequest->getAttribute('host', '[empty-host]');
+        $this->assertEquals('localhost', $attributeValue);
+
+    }
 }
