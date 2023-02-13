@@ -67,11 +67,11 @@ class ServerRequestTest extends TestCase
             'katara' => 'water'
         ];
         $json = json_encode($jsonStructure, JSON_PRETTY_PRINT);
-        $resource = fopen('php://output', 'w');
+        $resource = fopen('php://memory', 'r+');
         fputs($resource, $json);
-        fclose($resource);
 
         $serverRequest = new ServerRequest('POST', new Uri('http://test.com'), new Stream($resource));
-        $this->assertEquals($jsonStructure, json_decode($serverRequest->getParsedBody()));
+        $serverRequest = $serverRequest->withHeader('Content-Type', 'application/json');
+        $this->assertEquals((object)$jsonStructure, $serverRequest->getParsedBody());
     }
 }
