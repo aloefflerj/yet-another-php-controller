@@ -82,6 +82,7 @@ class ServerRequest extends Request #implements ServerRequestInterface
             return (object)json_decode($this->getBody());
         }
 
-        return (array)$this->getBody();
+        throw new \Exception("There is currently no implementation to parse content of type '{$this->getHeader('Content-Type')[0]}'");
+        return null;
     }
 }
