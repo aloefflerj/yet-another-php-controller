@@ -20,8 +20,8 @@ class Stream implements StreamInterface
     {
         $nullResource = is_null($resource);
         if ($nullResource) {
-            $resource = fopen("php://stdin","r");
-            echo '';
+            $resource = fopen('php://memory', 'r+');
+            fputs($resource, '');
         }
         
         if (!is_resource($resource)) {
