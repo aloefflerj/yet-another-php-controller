@@ -12,6 +12,8 @@ class Route
     public $headerParams;
     public $functionParams;
     public static $urlHandler;
+    private $body;
+    private $error;
 
     protected function __construct(string $uri, \closure $output, ?array $functionParams) {
         
