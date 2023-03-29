@@ -34,8 +34,17 @@ class UploadedFileTest extends TestCase
         $this->returnFileToOriginalPath();
     }
     
+    public function testGetSize(): void
+    {
+        $dummyFile = fopen(self::FILE_PATH, 'r+');
+        $stream = new Stream($dummyFile);
+        $uploadedFile = new UploadedFile($stream);
+        $this->assertEquals(56, $uploadedFile->getSize());
+    }
+
     private function returnFileToOriginalPath(): void
     {
         rename(self::EMPTY_DIR . '/' . self::FILE_NAME, __DIR__ . '/' . self::FILE_NAME);
     }
+
 }
