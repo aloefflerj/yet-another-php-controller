@@ -10,7 +10,7 @@ use PHPUnit\Framework\TestCase;
 
 class UploadedFileTest extends TestCase
 {
-    const FILE_NAME = __DIR__ . 'StreamDummyFile.txt';
+    const FILE_NAME = 'StreamDummyFile.txt';
     const FILE_PATH = __DIR__ . '/StreamDummyFile.txt';
     const EMPTY_DIR = __DIR__ . '/emptyDir';
 
@@ -27,10 +27,15 @@ class UploadedFileTest extends TestCase
         $dummyFile = fopen(self::FILE_PATH, 'r+');
         $stream = new Stream($dummyFile);
         $uploadedFile = new UploadedFile($stream);
-        $uploadedFile->moveTo(self::EMPTY_DIR);
+        $uploadedFile->moveTo(self::EMPTY_DIR . '/' . self::FILE_NAME);
         $this->assertTrue(file_exists(self::EMPTY_DIR . '/' . self::FILE_NAME));
         $this->assertFalse(file_exists(self::FILE_PATH));
 
-        $uploadedFile->moveTo(__DIR__);
+        $this->returnFileToOriginalPath();
+    }
+    
+    private function returnFileToOriginalPath(): void
+    {
+        rename(self::EMPTY_DIR . '/' . self::FILE_NAME, __DIR__ . '/' . self::FILE_NAME);
     }
 }
