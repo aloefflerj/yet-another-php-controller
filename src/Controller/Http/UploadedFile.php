@@ -40,4 +40,9 @@ class UploadedFile #implements UploadedFileInterface
             throw new \RuntimeException($errorMsg);
         }
     }
+
+    public function getSize()
+    {
+        return $this->source->getSize();
+    }
 }
