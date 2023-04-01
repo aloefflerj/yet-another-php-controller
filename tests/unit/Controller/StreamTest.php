@@ -68,7 +68,7 @@ class StreamTest extends TestCase
         $stream = new Stream($resource);
         $stream->close();
 
-        $this->expectError();
+        $this->expectException(\TypeError::class);
         $stream->getContents();
     }
 
