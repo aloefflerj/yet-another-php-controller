@@ -7,13 +7,12 @@ use Psr\Http\Message\UploadedFileInterface;
 
 class UploadedFile #implements UploadedFileInterface
 {
-    private int $error = UPLOAD_ERR_OK;
-
     public function __construct(
         private StreamInterface $source,
         private ?string $name = null,
         private ?string $type = null,
-        private ?int $size = null
+        private ?int $size = null,
+        private int $error = UPLOAD_ERR_OK
     ) {
         $this->assertMaxFileSize();
     }
