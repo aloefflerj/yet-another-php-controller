@@ -23,7 +23,12 @@ class UploadedFileTest extends TestCase
     {
         $this->dummyFile = fopen(self::FILE_PATH, 'r+');
         $this->stream = new Stream($this->dummyFile);
-        $this->uploadedFile = new UploadedFile($this->stream);
+        $this->uploadedFile = new UploadedFile(
+            $this->stream,
+            self::FILE_NAME,
+            'text/plain',
+            56
+        );
     }
 
     public function testStream(): void
@@ -57,6 +62,13 @@ class UploadedFileTest extends TestCase
         $uploadedFile = $this->uploadedFile;
 
         $this->assertEquals(0, $uploadedFile->getError());
+    }
+
+    public function testGetClientFilename(): void
+    {
+        $uploadedFile = $this->uploadedFile;
+
+        $this->assertEquals(self::FILE_NAME, $uploadedFile->getClientFilename());
     }
 
     private function returnFileToOriginalPath(): void
