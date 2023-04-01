@@ -44,6 +44,12 @@ class StreamTest extends TestCase
         new Stream($resource);
     }
 
+    public function testBuildFromString(): void
+    {
+        $stream = Stream::buildFromString('I\'m a shooting star leaping through the sky.');
+        $this->assertInstanceOf(Stream::class, $stream);
+    }
+
     public function testIsWritable(): void
     {
         $stream = $this->stream;
