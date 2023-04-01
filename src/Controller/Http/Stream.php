@@ -23,7 +23,7 @@ class Stream implements StreamInterface
             $resource = fopen('php://memory', 'r+');
             fputs($resource, '');
         }
-        
+
         if (!is_resource($resource)) {
             throw new \InvalidArgumentException('Argument must be a valid resource type');
         }
@@ -54,6 +54,20 @@ class Stream implements StreamInterface
         if ($nullResource) {
             fclose($resource);
         }
+    }
+
+    /**
+     * Implementation based upon (ripped off from): https://github.com/Nyholm/psr7/blob/master/src/Stream.php
+     * @link https://github.com/Nyholm/psr7/blob/master/src/Stream.php
+     */
+    public static function buildFromString(string $body = ''): StreamInterface
+    {
+        $resource = fopen('php://temp', 'rw+');
+
+        fwrite($resource, $body);
+        fseek($resource, 0);
+
+        return new self($resource);
     }
 
     public function __toString(): string
