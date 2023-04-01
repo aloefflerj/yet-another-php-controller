@@ -52,6 +52,11 @@ class UploadedFile #implements UploadedFileInterface
         return $this->error;
     }
 
+    public function getClientFilename()
+    {
+        return $this->name;
+    }
+
     private function assertMaxFileSize(): void
     {
         $fileSizeInBytes = $this->getSize();
