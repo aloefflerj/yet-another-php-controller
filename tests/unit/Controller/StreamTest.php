@@ -6,6 +6,7 @@ namespace Aloefflerj\YetAnotherController;
 
 use Aloefflerj\YetAnotherController\Controller\Http\Stream;
 use PHPUnit\Framework\TestCase;
+use Psr\Http\Message\StreamInterface;
 
 class StreamTest extends TestCase
 {
@@ -23,20 +24,29 @@ class StreamTest extends TestCase
         "uri" => __DIR__ . "/StreamDummyFile.txt"
     ];
 
-    public function testConstruct(): void
+    private StreamInterface $stream;
+
+    protected function setUp(): void
     {
         $resource = fopen(self::FILE_PATH, 'r+');
-        $stream = new Stream($resource);
+        $this->stream = new Stream($resource);
+    }
 
+    protected function tearDown(): void
+    {
+        unset($this->stream);
+    }
+
+    public function testConstruct(): void
+    {
         $this->expectException(\InvalidArgumentException::class);
         $resource = self::FILE_PATH;
-        $stream = new Stream($resource);
+        new Stream($resource);
     }
 
     public function testIsWritable(): void
     {
-        $resource = fopen(self::FILE_PATH, 'r+');
-        $stream = new Stream($resource);
+        $stream = $this->stream;
         $this->assertTrue($stream->isWritable());
 
         $resource = fopen(self::FILE_PATH, 'r');
@@ -57,15 +67,13 @@ class StreamTest extends TestCase
 
     public function testIsSeekable(): void
     {
-        $resource = fopen(self::FILE_PATH, 'r+');
-        $stream = new Stream($resource);
+        $stream = $this->stream;
         $this->assertTrue($stream->isSeekable());
     }
 
     public function testClose(): void
     {
-        $resource = fopen(self::FILE_PATH, 'r+');
-        $stream = new Stream($resource);
+        $stream = $this->stream;
         $stream->close();
 
         $this->expectException(\TypeError::class);
@@ -74,8 +82,7 @@ class StreamTest extends TestCase
 
     public function testDetach(): void
     {
-        $resource = fopen(self::FILE_PATH, 'r+');
-        $stream = new Stream($resource);
+        $stream = $this->stream;
         $legacy = $stream->detach();
         $this->assertIsResource($legacy);
 
@@ -86,8 +93,7 @@ class StreamTest extends TestCase
 
     public function testGetSize(): void
     {
-        $resource = fopen(self::FILE_PATH, 'r+');
-        $stream = new Stream($resource);
+        $stream = $this->stream;
         $stream->write(self::DUMMY_TEXT);
         $this->assertEquals(56, $stream->getSize());
 
@@ -98,8 +104,7 @@ class StreamTest extends TestCase
 
     public function testTell(): void
     {
-        $resource = fopen(self::FILE_PATH, 'r+');
-        $stream = new Stream($resource);
+        $stream = $this->stream;
         $stream->write(self::DUMMY_TEXT);
         $stream->seek(42);
         $this->assertEquals(42, $stream->tell());
@@ -112,8 +117,7 @@ class StreamTest extends TestCase
 
     public function testEof(): void
     {
-        $resource = fopen(self::FILE_PATH, 'r+');
-        $stream = new Stream($resource);
+        $stream = $this->stream;
         $stream->seek(10);
         $this->assertFalse($stream->eof());
 
@@ -124,8 +128,7 @@ class StreamTest extends TestCase
 
     public function testSeek(): void
     {
-        $resource = fopen(self::FILE_PATH, 'r+');
-        $stream = new Stream($resource);
+        $stream = $this->stream;
         $stream->seek(42);
         $this->assertEquals(42, $stream->tell());
 
@@ -152,8 +155,7 @@ class StreamTest extends TestCase
 
     public function testRewind(): void
     {
-        $resource = fopen(self::FILE_PATH, 'r+');
-        $stream = new Stream($resource);
+        $stream = $this->stream;
         $stream->rewind();
 
         $this->assertEquals(0, $stream->tell());
@@ -206,8 +208,7 @@ class StreamTest extends TestCase
 
     public function testGetContents(): void
     {
-        $resource = fopen(self::FILE_PATH, 'r+');
-        $stream = new Stream($resource);
+        $stream = $this->stream;
         $stream->write(self::DUMMY_TEXT);
         $this->assertEquals(self::DUMMY_TEXT, $stream->getContents());
         $stream->close();
@@ -223,8 +224,7 @@ class StreamTest extends TestCase
 
     public function testGetMetadata(): void
     {
-        $resource = fopen(self::FILE_PATH, 'r+');
-        $stream = new Stream($resource);
+        $stream = $this->stream;
         $stream->write(self::DUMMY_TEXT);
         $this->assertEquals(self::$dummyMetadata, $stream->getMetadata());
         $stream->close();
@@ -232,8 +232,7 @@ class StreamTest extends TestCase
 
     public function testToString(): void
     {
-        $resource = fopen(self::FILE_PATH, 'r+');
-        $stream = new Stream($resource);
+        $stream = $this->stream;
         $stream->write(self::DUMMY_TEXT);
 
         $this->assertEquals(self::DUMMY_TEXT, $stream);
