@@ -2,15 +2,17 @@
 
 namespace Aloefflerj\YetAnotherController\Controller\Http;
 
-use Aloefflerj\YetAnotherController\Controller\Helpers\UriHelper;
-use Psr\Http\Message\RequestInterface;
+use Aloefflerj\YetAnotherController\Psr\Http\Message\UploadedFileInterface as MessageUploadedFileInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Message\StreamInterface;
-use Psr\Http\Message\UriInterface;
+use Psr\Http\Message\UploadedFileInterface;
 
-class ServerRequest extends Request #implements ServerRequestInterface
+class ServerRequest extends Request implements ServerRequestInterface
 {
     private array $attributes = [];
+    /**
+     * @var UploadedFileInterface[]
+     */
+    private array $uploadedFiles = [];
 
     public function getServerParams()
     {
@@ -161,7 +163,58 @@ class ServerRequest extends Request #implements ServerRequestInterface
     {
         $clone = clone $this;
         unset($clone->attributes[$name]);
-        
+
         return $clone;
+    }
+
+    public function getUploadedFiles()
+    {
+        if (empty($_FILES)) {
+            return $this->uploadedFiles;
+        }
+
+        $formattedFiles = $this->formatGlobalFilesVarIntoFilesArray($_FILES);
+        $uploadedFiles = $this->hydrateUploadedFilesFromArrayOfFiles($formattedFiles);
+
+        $this->uploadedFiles = $uploadedFiles;
+        return $this->uploadedFiles;
+    }
+
+    public function withUploadedFiles(array $uploadedFiles)
+    {
+        
+    }
+
+    private function formatGlobalFilesVarIntoFilesArray(array $filesGlobalVar): array
+    {
+        $formattedFiles = [];
+        foreach ($filesGlobalVar as $filesKey => $filesWithInfos) {
+            foreach ($filesWithInfos as $infoKey => $infoValue) {
+                if (is_scalar($infoValue)) {
+                    $infoValue = [$infoValue];
+                }
+
+                for ($i = 0; $i < count($infoValue); $i++) {
+                    $formattedFiles[$filesKey][$i][$infoKey] = $infoValue[$i];
+                }
+            }
+        }
+
+        return $formattedFiles;
+    }
+
+    /**
+     * @param array $formattedFiles
+     * @return MessageUploadedFileInterface[]
+     */
+    private function hydrateUploadedFilesFromArrayOfFiles(array $formattedFiles): array
+    {
+        $hydratedUploadedFiles = [];
+        foreach ($formattedFiles as $fileGroupName => $fileGroup) {
+            foreach ($fileGroup as $fileGroupIndex => $fileInfo) {
+                $hydratedUploadedFiles[] = UploadedFile::buildFromFileInfo($fileInfo, $fileGroupName, $fileGroupIndex);
+            }
+        }
+        return $hydratedUploadedFiles;
     }
 }

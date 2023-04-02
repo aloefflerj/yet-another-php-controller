@@ -12,7 +12,9 @@ class UploadedFile implements UploadedFileInterface
         private ?string $name = null,
         private ?string $type = null,
         private ?int $size = null,
-        private int $error = UPLOAD_ERR_OK
+        private int $error = UPLOAD_ERR_OK,
+        private string $fileGroupKey = '',
+        private int $fileGroupIndex = 0
     ) {
         $this->assertMaxFileSize();
     }
@@ -62,6 +64,16 @@ class UploadedFile implements UploadedFileInterface
         return $this->type;
     }
 
+    public function getFileGroupKey(): string
+    {
+        return $this->fileGroupKey;
+    }
+
+    public function getFileGroupIndex(): int
+    {
+        return $this->fileGroupIndex;
+    }
+
     private function assertMaxFileSize(): void
     {
         $fileSizeInBytes = $this->getSize();
@@ -98,5 +110,38 @@ class UploadedFile implements UploadedFileInterface
                 break;
         }
         return (int)$iValue;
+    }
+
+    public static function buildFromFileInfo(array $fileInfo, string $fileGroupKey = '', int $fileGroupIndex = 0): self
+    {
+        $requiredFields = [
+            'name',
+            'full_path',
+            'type',
+            'tmp_name',
+            'error',
+            'size',
+        ];
+        
+        $diff = array_diff(array_keys($fileInfo), $requiredFields);
+        $numberOfDifferences = count($diff);
+
+        if ($numberOfDifferences > 0) {
+            $diffMsg = print_r($diff, true);
+            throw new \DomainException("There are difference between required file fields: {$diffMsg}");
+        }
+
+        $fileResource = fopen($fileInfo['tmp_name'], 'r+');
+        $fileStream = new Stream($fileResource);
+        
+        return new self(
+            $fileStream,
+            $fileInfo['name'],
+            $fileInfo['type'],
+            $fileInfo['size'],
+            $fileInfo['error'],
+            $fileGroupKey,
+            $fileGroupIndex
+        );
     }
 }
