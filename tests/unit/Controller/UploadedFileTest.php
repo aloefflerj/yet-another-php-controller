@@ -8,6 +8,7 @@ use Aloefflerj\YetAnotherController\Controller\Http\Stream;
 use Aloefflerj\YetAnotherController\Controller\Http\UploadedFile;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\StreamInterface;
+use Psr\Http\Message\UploadedFileInterface;
 
 class UploadedFileTest extends TestCase
 {
@@ -18,7 +19,7 @@ class UploadedFileTest extends TestCase
 
     private mixed $dummyFile;
     private StreamInterface $stream;
-    private UploadedFile $uploadedFile;
+    private UploadedFileInterface $uploadedFile;
 
     protected function setUp(): void
     {
