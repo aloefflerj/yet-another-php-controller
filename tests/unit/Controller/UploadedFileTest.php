@@ -14,6 +14,7 @@ class UploadedFileTest extends TestCase
     const FILE_NAME = 'StreamDummyFile.txt';
     const FILE_PATH = __DIR__ . '/StreamDummyFile.txt';
     const EMPTY_DIR = __DIR__ . '/emptyDir';
+    const FILE_TYPE = 'text/plain';
 
     private mixed $dummyFile;
     private StreamInterface $stream;
@@ -26,7 +27,7 @@ class UploadedFileTest extends TestCase
         $this->uploadedFile = new UploadedFile(
             $this->stream,
             self::FILE_NAME,
-            'text/plain',
+            self::FILE_TYPE,
             56
         );
     }
@@ -69,6 +70,13 @@ class UploadedFileTest extends TestCase
         $uploadedFile = $this->uploadedFile;
 
         $this->assertEquals(self::FILE_NAME, $uploadedFile->getClientFilename());
+    }
+
+    public function testGetClientMediaType(): void
+    {
+        $uploadedFile = $this->uploadedFile;
+
+        $this->assertEquals(self::FILE_TYPE, $uploadedFile->getClientMediaType());
     }
 
     private function returnFileToOriginalPath(): void
