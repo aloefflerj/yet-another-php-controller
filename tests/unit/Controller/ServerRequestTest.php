@@ -6,8 +6,11 @@ namespace Aloefflerj\YetAnotherController;
 
 use Aloefflerj\YetAnotherController\Controller\Http\ServerRequest;
 use Aloefflerj\YetAnotherController\Controller\Http\Stream;
+use Aloefflerj\YetAnotherController\Controller\Http\UploadedFile;
 use Aloefflerj\YetAnotherController\Controller\Http\Uri;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
+use Psr\Http\Message\UploadedFileInterface;
 
 class ServerRequestTest extends TestCase
 {
@@ -109,9 +112,7 @@ class ServerRequestTest extends TestCase
         $_SESSION['user_role'] = 'airbender';
         $_SERVER['REMOTE_ADDR'] = '127.0.0.1';
 
-        $serverRequest = $serverRequest->
-            withAttribute('session', $_SESSION)->
-            withAttribute('ip_address', $_SERVER['REMOTE_ADDR']);
+        $serverRequest = $serverRequest->withAttribute('session', $_SESSION)->withAttribute('ip_address', $_SERVER['REMOTE_ADDR']);
 
         $attributes = $serverRequest->getAttributes();
         $this->assertEquals([
@@ -131,5 +132,94 @@ class ServerRequestTest extends TestCase
         $serverRequest = $serverRequest->withoutAttribute('host');
         $defaultAttributeValue = $serverRequest->getAttribute('host', '[empty-host]');
         $this->assertEquals('[empty-host]', $defaultAttributeValue);
+    }
+
+    #[DataProvider('getSingleFileUploadMockFromPhpFilesGlobalVar')]
+    #[DataProvider('getMultipleFilesUploadMockFromPhpFilesGlobalVar')]
+    public function testUploadedFilesByFilesGlobalVar(array $globalFilesVarResultAfterFileUpload): void
+    {
+        $_FILES = $globalFilesVarResultAfterFileUpload;
+        $serverRequest = new ServerRequest('POST');
+        $uploadedFiles = $serverRequest->getUploadedFiles();
+
+        $expected = $globalFilesVarResultAfterFileUpload;
+
+        foreach ($uploadedFiles as $uploadedFile) {
+            /** @var UploadedFile $uploadedFile */
+            $fileGroupKey = $uploadedFile->getFileGroupKey();
+            $fileGroupIndex = $uploadedFile->getFileGroupIndex();
+
+            $expectedName = is_scalar($expected[$fileGroupKey]['name']) ?
+                $expected[$fileGroupKey]['name'] :
+                $expected[$fileGroupKey]['name'][$fileGroupIndex];
+
+            $expectedType = is_scalar($expected[$fileGroupKey]['type']) ?
+                $expected[$fileGroupKey]['type'] :
+                $expected[$fileGroupKey]['type'][$fileGroupIndex];
+
+            $expectedError = is_scalar($expected[$fileGroupKey]['error']) ?
+                $expected[$fileGroupKey]['error'] :
+                $expected[$fileGroupKey]['error'][$fileGroupIndex];
+
+            $expectedSize = is_scalar($expected[$fileGroupKey]['size']) ?
+                $expected[$fileGroupKey]['size'] :
+                $expected[$fileGroupKey]['size'][$fileGroupIndex];
+
+            $this->assertInstanceOf(UploadedFileInterface::class, $uploadedFile);
+            $this->assertEquals($expectedName, $uploadedFile->getClientFilename());
+            $this->assertEquals($expectedType, $uploadedFile->getClientMediaType());
+            $this->assertEquals($expectedError, $uploadedFile->getError());
+            $this->assertEquals($expectedSize, $uploadedFile->getSize());
+        }
+    }
+
+    const FILE1_UPLOAD_MOCK = [
+        'name' => 'StreamDummyFile.txt',
+        'full_path' => 'StreamDummyFile.txt',
+        'type' => 'text/plain',
+        'tmp_name' => __DIR__ . '/StreamDummyFile.txt',
+        'error' => 0,
+        'size' => 56,
+    ];
+
+    const FILE2_UPLOAD_MOCK = [
+        'name' => [
+            'StreamDummyFile.txt',
+            'StreamDummyFile.log',
+        ],
+        'full_path' => [
+            'StreamDummyFile.txt',
+            'StreamDummyFile.log',
+        ],
+        'type' => [
+            'text/plain',
+            'text/plain',
+        ],
+        'tmp_name' => [
+            __DIR__ . '/StreamDummyFile.txt',
+            __DIR__ . '/StreamDummyFile.log',
+        ],
+        'error' => [
+            0,
+            0,
+        ],
+        'size' => [
+            56,
+            60,
+        ]
+    ];
+
+    public static function getSingleFileUploadMockFromPhpFilesGlobalVar(): array
+    {
+        return ['single-file-upload-mock' => [["file1" => self::FILE1_UPLOAD_MOCK]]];
+    }
+
+    public static function getMultipleFilesUploadMockFromPhpFilesGlobalVar(): array
+    {
+        return [
+            'multiple-files-upload-mock' => [
+                ["file1" => self::FILE1_UPLOAD_MOCK, "file2" => self::FILE2_UPLOAD_MOCK],
+            ]
+        ];
     }
 }
