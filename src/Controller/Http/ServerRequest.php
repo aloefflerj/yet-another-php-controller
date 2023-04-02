@@ -167,6 +167,9 @@ class ServerRequest extends Request implements ServerRequestInterface
         return $clone;
     }
 
+    /**
+     * @return UploadedFileInterface[]
+     */
     public function getUploadedFiles()
     {
         if (empty($_FILES)) {
@@ -182,7 +185,18 @@ class ServerRequest extends Request implements ServerRequestInterface
 
     public function withUploadedFiles(array $uploadedFiles)
     {
-        
+        $uploadedFileInterfaceName = UploadedFileInterface::class;
+
+        foreach ($uploadedFiles as $uploadedFile) {
+            if (!is_a($uploadedFile, $uploadedFileInterfaceName)) {
+                throw new \InvalidArgumentException("All items from array must contain an instance of {$uploadedFileInterfaceName}");
+            }
+        }
+
+        $clone = clone $this;
+        $clone->uploadedFiles = $uploadedFiles;
+
+        return $clone;
     }
 
     private function formatGlobalFilesVarIntoFilesArray(array $filesGlobalVar): array
