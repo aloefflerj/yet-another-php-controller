@@ -14,6 +14,42 @@ use Psr\Http\Message\UploadedFileInterface;
 
 class ServerRequestTest extends TestCase
 {
+    const FILE1_UPLOAD_MOCK = [
+        'name' => 'StreamDummyFile.txt',
+        'full_path' => 'StreamDummyFile.txt',
+        'type' => 'text/plain',
+        'tmp_name' => __DIR__ . '/StreamDummyFile.txt',
+        'error' => 0,
+        'size' => 56,
+    ];
+
+    const FILE2_UPLOAD_MOCK = [
+        'name' => [
+            'StreamDummyFile.txt',
+            'StreamDummyFile.log',
+        ],
+        'full_path' => [
+            'StreamDummyFile.txt',
+            'StreamDummyFile.log',
+        ],
+        'type' => [
+            'text/plain',
+            'text/plain',
+        ],
+        'tmp_name' => [
+            __DIR__ . '/StreamDummyFile.txt',
+            __DIR__ . '/StreamDummyFile.log',
+        ],
+        'error' => [
+            0,
+            0,
+        ],
+        'size' => [
+            56,
+            60,
+        ]
+    ];
+
     public function testServerParams(): void
     {
         $serverRequest = new ServerRequest('GET');
@@ -134,8 +170,8 @@ class ServerRequestTest extends TestCase
         $this->assertEquals('[empty-host]', $defaultAttributeValue);
     }
 
-    #[DataProvider('getSingleFileUploadMockFromPhpFilesGlobalVar')]
-    #[DataProvider('getMultipleFilesUploadMockFromPhpFilesGlobalVar')]
+    #[DataProvider('singleFileUploadMockFromPhpFilesGlobalVarPriveder')]
+    #[DataProvider('multipleFilesUploadMockFromPhpFilesGlobalVarProvider')]
     public function testUploadedFilesByFilesGlobalVar(array $globalFilesVarResultAfterFileUpload): void
     {
         $_FILES = $globalFilesVarResultAfterFileUpload;
@@ -171,54 +207,52 @@ class ServerRequestTest extends TestCase
             $this->assertEquals($expectedError, $uploadedFile->getError());
             $this->assertEquals($expectedSize, $uploadedFile->getSize());
         }
+        $_FILES = [];
     }
 
-    const FILE1_UPLOAD_MOCK = [
-        'name' => 'StreamDummyFile.txt',
-        'full_path' => 'StreamDummyFile.txt',
-        'type' => 'text/plain',
-        'tmp_name' => __DIR__ . '/StreamDummyFile.txt',
-        'error' => 0,
-        'size' => 56,
-    ];
+    #[DataProvider('manuallyUploadFilesProvider')]
+    public function testUploadedFilesByManuallyUploadingThem(array $filesPaths, array $filesNames): void
+    {
+        foreach ($filesPaths as $i => $filePath) {
+            $resource = fopen($filePath, 'r+');
+            $stream = new Stream($resource);
+            $uploadedFiles[$i] = new UploadedFile($stream, $filesNames[$i]);
+            fclose($resource);
+        }
 
-    const FILE2_UPLOAD_MOCK = [
-        'name' => [
-            'StreamDummyFile.txt',
-            'StreamDummyFile.log',
-        ],
-        'full_path' => [
-            'StreamDummyFile.txt',
-            'StreamDummyFile.log',
-        ],
-        'type' => [
-            'text/plain',
-            'text/plain',
-        ],
-        'tmp_name' => [
-            __DIR__ . '/StreamDummyFile.txt',
-            __DIR__ . '/StreamDummyFile.log',
-        ],
-        'error' => [
-            0,
-            0,
-        ],
-        'size' => [
-            56,
-            60,
-        ]
-    ];
+        $serverRequest = new ServerRequest('POST');
+        $serverRequest = $serverRequest->withUploadedFiles($uploadedFiles);
 
-    public static function getSingleFileUploadMockFromPhpFilesGlobalVar(): array
+        foreach ($serverRequest->getUploadedFiles() as $i => $uploadedFile) {
+            $this->assertInstanceOf(UploadedFileInterface::class, $uploadedFile);
+            $this->assertEquals($filesNames[$i], $uploadedFile->getClientFilename());
+        }
+    }
+
+    public static function singleFileUploadMockFromPhpFilesGlobalVarPriveder(): array
     {
         return ['single-file-upload-mock' => [["file1" => self::FILE1_UPLOAD_MOCK]]];
     }
 
-    public static function getMultipleFilesUploadMockFromPhpFilesGlobalVar(): array
+    public static function multipleFilesUploadMockFromPhpFilesGlobalVarProvider(): array
     {
         return [
             'multiple-files-upload-mock' => [
                 ["file1" => self::FILE1_UPLOAD_MOCK, "file2" => self::FILE2_UPLOAD_MOCK],
+            ]
+        ];
+    }
+
+    public static function manuallyUploadFilesProvider(): array
+    {
+        return [
+            'single-dummy-file' => [
+                [__DIR__ . '/StreamDummyFile.txt'],
+                ['StreamDummyFile.txt']
+            ],
+            'multiple-dummy-file' => [
+                [__DIR__ . '/StreamDummyFile.txt', __DIR__ . '/StreamDummyFile.log'],
+                ['StreamDummyFile.txt', 'StreamDummyFile.log']
             ]
         ];
     }
