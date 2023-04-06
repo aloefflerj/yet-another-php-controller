@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Aloefflerj\YetAnotherController;
 
+use Aloefflerj\YetAnotherController\Controller\Http\Response;
 use Aloefflerj\YetAnotherController\Controller\Http\Stream;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
@@ -28,7 +29,8 @@ class ResponseTest extends TestCase
             $reason
         );
 
-        $this->assertInstanceOf(ResponseInterface::class, $response);
+        // $this->assertInstanceOf(ResponseInterface::class, $response);
+        $this->assertInstanceOf(Response::class, $response);
     }
 
     public static function responseCasesProvider(): array
