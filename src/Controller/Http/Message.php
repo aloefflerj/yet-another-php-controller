@@ -9,14 +9,15 @@ class Message implements MessageInterface
 {
     use Headers;
 
-    protected array $headers;
-    protected string $protocolVersion;
-    protected StreamInterface $body;
+    public function __construct(
+        protected array $headers = [],
+        protected string $protocolVersion = '1.0',
+        protected StreamInterface | string $body = ''
+    ) {
+        if (is_string($body))
+            $body = Stream::buildFromString($body);
 
-    public function __construct()
-    {
-        $this->protocolVersion = '1.0';
-        $this->headers = [];
+        $this->body = $body;
     }
 
     public function getProtocolVersion(): string
@@ -114,7 +115,7 @@ class Message implements MessageInterface
         $name = strtolower($name);
 
         $clone = clone $this;
-        
+
         if (!isset(($this->headers[$name]))) {
             return $clone;
         }
