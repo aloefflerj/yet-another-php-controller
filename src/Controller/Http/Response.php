@@ -16,4 +16,9 @@ class Response extends Message #implements ResponseInterface
     ) {
         parent::__construct($headers, $protocolVersion, $body);
     }
+
+    public function getStatusCode()
+    {
+        return $this->status;
+    }
 }
