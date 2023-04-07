@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Aloefflerj\YetAnotherController;
 
 use Aloefflerj\YetAnotherController\Controller\Http\Response;
+use Aloefflerj\YetAnotherController\Controller\Http\StatusCodeToReason;
 use Aloefflerj\YetAnotherController\Controller\Http\Stream;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
@@ -13,6 +14,8 @@ use Psr\Http\Message\StreamInterface;
 
 class ResponseTest extends TestCase
 {
+    use StatusCodeToReason;
+
     #[DataProvider('responseCasesProvider')]
     public function testResponseIsCorrectlyInstantiated(
         int $status,
@@ -49,6 +52,28 @@ class ResponseTest extends TestCase
             $reason
         );
         $this->assertEquals($status, $response->getStatusCode());
+    }
+
+    #[DataProvider('responseCasesProvider')]
+    public function testResponseReasonPhraseIsCorrectlySetted(
+        int $status,
+        array $headers,
+        StreamInterface $body,
+        string $version,
+        string $reason
+    ): void {
+        $response = new Response(
+            $status,
+            $headers,
+            $body,
+            $version,
+            $reason
+        );
+
+        if (empty($reason))
+            $reason = $this->getStatusCodeToReasonMap($status);
+            
+        $this->assertEquals($reason, $response->getReasonPhrase());
     }
 
     public static function responseCasesProvider(): array
