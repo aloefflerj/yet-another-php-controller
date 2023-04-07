@@ -7,6 +7,8 @@ use Psr\Http\Message\StreamInterface;
 
 class Response extends Message #implements ResponseInterface
 {
+    use StatusCodeToReason;
+
     public function __construct(
         private int $status,
         array $headers,
@@ -20,5 +22,16 @@ class Response extends Message #implements ResponseInterface
     public function getStatusCode()
     {
         return $this->status;
+    }
+
+    public function getReasonPhrase()
+    {
+        $reason = $this->reason;
+
+        if (empty($reason)) {
+            return $this->getReasonPhraseByCode($this->status);
+        }
+        
+        return $this->reason;
     }
 }

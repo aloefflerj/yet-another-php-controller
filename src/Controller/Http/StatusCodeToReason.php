@@ -4,7 +4,7 @@ namespace Aloefflerj\YetAnotherController\Controller\Http;
 
 trait StatusCodeToReason
 {
-    public function getStatusCodeToReasonMap(): array
+    public function getStatusCodeToReasonMap(int $status): array
     {
         return [
             100 => 'Continue',
@@ -55,10 +55,8 @@ trait StatusCodeToReason
             424 => 'Failed Dependency',
             425 => 'Too Early',
             426 => 'Upgrade Required',
-            427 => 'Unassigned',
             428 => 'Precondition Required',
             429 => 'Too Many Requests',
-            430 => 'Unassigned',
             431 => 'Request Header Fields Too Large',
             451 => 'Unavailable For Legal Reasons',
             500 => 'Internal Server Error',
@@ -70,9 +68,18 @@ trait StatusCodeToReason
             506 => 'Variant Also Negotiates',
             507 => 'Insufficient Storage',
             508 => 'Loop Detected',
-            509 => 'Unassigned',
             510 => 'Not Extended (OBSOLETED)',
             511 => 'Network Authentication Required',
         ];
+    }
+
+    public function getReasonPhraseByCode(int $status): string
+    {
+        $statusToReason = $this->getStatusCodeToReasonMap($status);
+
+        if (isset($statusToReason[$status]))
+            return 'Unassigned';
+
+        return $statusToReason[$status];
     }
 }
