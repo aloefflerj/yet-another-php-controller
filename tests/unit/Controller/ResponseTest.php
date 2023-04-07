@@ -127,6 +127,29 @@ class ResponseTest extends TestCase
         $this->assertEquals($reason, $response->getReasonPhrase());
     }
 
+    #[DataProvider('responseCasesProvider')]
+    public function testWithInvalidStatusCodeThrowsException(
+        int $status,
+        array $headers,
+        StreamInterface $body,
+        string $version,
+        string $reason
+    ): void {
+        $response = new Response(
+            $status,
+            $headers,
+            $body,
+            $version,
+            $reason
+        );
+
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid status code');
+
+        $response = $response->withStatus(10000);
+        $expectedReasonPhrase = $this->getReasonPhraseByCode($status);
+    }
+
     public static function responseCasesProvider(): array
     {
         return [
