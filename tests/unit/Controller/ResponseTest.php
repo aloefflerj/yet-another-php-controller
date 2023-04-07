@@ -70,9 +70,10 @@ class ResponseTest extends TestCase
             $reason
         );
 
-        if (empty($reason))
-            $reason = $this->getStatusCodeToReasonMap($status);
-            
+        if (empty($reason)) {
+            $reason = $this->getReasonPhraseByCode($status);
+        }
+
         $this->assertEquals($reason, $response->getReasonPhrase());
     }
 
