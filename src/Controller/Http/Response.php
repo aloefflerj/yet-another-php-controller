@@ -16,6 +16,9 @@ class Response extends Message #implements ResponseInterface
         string $protocolVersion,
         private string $reason
     ) {
+        if (!$this->isStatusCodeValid($status))
+            throw new \InvalidArgumentException('Invalid status code');
+            
         parent::__construct($headers, $protocolVersion, $body);
     }
 

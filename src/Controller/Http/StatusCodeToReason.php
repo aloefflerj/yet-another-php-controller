@@ -82,4 +82,15 @@ trait StatusCodeToReason
 
         return $statusToReason[$status];
     }
+
+    public function isStatusCodeValid(int $status): bool
+    {
+        $statusToReason = $this->getStatusCodeToReasonMap($status);
+
+        if (!in_array($status, array_keys($statusToReason))) {
+            return false;
+        }
+
+        return true;
+    }
 }
