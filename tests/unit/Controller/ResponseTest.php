@@ -33,16 +33,45 @@ class ResponseTest extends TestCase
         $this->assertInstanceOf(Response::class, $response);
     }
 
+    #[DataProvider('responseCasesProvider')]
+    public function testResponseStatusCodeIsCorrectlySetted(
+        int $status,
+        array $headers,
+        StreamInterface $body,
+        string $version,
+        string $reason
+    ): void {
+        $response = new Response(
+            $status,
+            $headers,
+            $body,
+            $version,
+            $reason
+        );
+        $this->assertEquals($status, $response->getStatusCode());
+    }
+
     public static function responseCasesProvider(): array
     {
-        return ['simple-response-case' => [
-            'statusCode' => 200,
-            'headers' => ['content-type' => ['application/json']],
-            'body' => Stream::buildFromString(
-                json_encode((object)['user' => 'holy jesus'])
-            ),
-            'version' => '1.1',
-            'reason' => 'OK'
-        ]];
+        return [
+            'simple-response-case' => [
+                'statusCode' => 200,
+                'headers' => ['content-type' => ['application/json']],
+                'body' => Stream::buildFromString(
+                    json_encode((object)['user' => 'holy jesus'])
+                ),
+                'version' => '1.1',
+                'reason' => 'OK'
+            ],
+            'response-without-reason-case' => [
+                'statusCode' => 404,
+                'headers' => ['content-type' => ['application/json']],
+                'body' => Stream::buildFromString(
+                    json_encode((object)['user' => 'holy jesus'])
+                ),
+                'version' => '1.1',
+                'reason' => ''
+            ]
+        ];
     }
 }
