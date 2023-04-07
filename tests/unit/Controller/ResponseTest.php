@@ -115,11 +115,13 @@ class ResponseTest extends TestCase
 
         $response = $response->withStatus($status);
         $expectedReasonPhrase = $this->getReasonPhraseByCode($status);
-        
+
         $this->assertEquals($status, $response->getStatusCode());
         $this->assertEquals($expectedReasonPhrase, $response->getReasonPhrase());
 
         $response = $response->withStatus($status, $reason);
+        if (empty($reason))
+            $reason = $this->getReasonPhraseByCode($status);
 
         $this->assertEquals($status, $response->getStatusCode());
         $this->assertEquals($reason, $response->getReasonPhrase());
