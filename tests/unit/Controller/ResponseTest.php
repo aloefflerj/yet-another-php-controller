@@ -77,6 +77,25 @@ class ResponseTest extends TestCase
         $this->assertEquals($reason, $response->getReasonPhrase());
     }
 
+    public function testStatusDoesNotExists(
+        int $status,
+        array $headers,
+        StreamInterface $body,
+        string $version,
+        string $reason
+    ): void {
+        $response = new Response(
+            100000,
+            $headers,
+            $body,
+            $version,
+            $reason
+        );
+
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid status code');
+    }
+
     public static function responseCasesProvider(): array
     {
         return [
