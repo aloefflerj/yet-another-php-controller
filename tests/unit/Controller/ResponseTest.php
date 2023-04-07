@@ -97,6 +97,34 @@ class ResponseTest extends TestCase
         );
     }
 
+    #[DataProvider('responseCasesProvider')]
+    public function testWithStatusCodeWorksCorrectly(
+        int $status,
+        array $headers,
+        StreamInterface $body,
+        string $version,
+        string $reason
+    ): void {
+        $response = new Response(
+            $status,
+            $headers,
+            $body,
+            $version,
+            $reason
+        );
+
+        $response = $response->withStatus($status);
+        $expectedReasonPhrase = $this->getReasonPhraseByCode($status);
+        
+        $this->assertEquals($status, $response->getStatusCode());
+        $this->assertEquals($expectedReasonPhrase, $response->getReasonPhrase());
+
+        $response = $response->withStatus($status, $reason);
+
+        $this->assertEquals($status, $response->getStatusCode());
+        $this->assertEquals($reason, $response->getReasonPhrase());
+    }
+
     public static function responseCasesProvider(): array
     {
         return [
