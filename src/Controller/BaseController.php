@@ -18,7 +18,7 @@ class BaseController
     private UrlHandler $urlHandler;
     private \Exception $error;
 
-    public function __construct()
+    public function __construct(private $baseUri = '')
     {
         $this->urlHandler = new UrlHandler();
         $this->routes = new Routes();
@@ -26,6 +26,7 @@ class BaseController
 
     public function get(string $uri, \closure $output, ?array $functionParams = null): BaseController
     {
+        $uri = $this->baseUri . $uri;
         $routes = $this->routes->get($uri, $output, $functionParams)->add();
         if ($routes->error()) {
             $this->error = $routes->error();
@@ -35,6 +36,7 @@ class BaseController
 
     public function post(string $uri, \closure $output, ?array $functionParams = null): BaseController
     {
+        $uri = $this->baseUri . $uri;
         $routes = $this->routes->post($uri, $output, $functionParams)->add();
         if ($routes->error()) {
             $this->error = $routes->error();
@@ -44,6 +46,7 @@ class BaseController
 
     public function put(string $uri, \closure $output, ?array $functionParams = null): BaseController
     {
+        $uri = $this->baseUri . $uri;
         $routes = $this->routes->put($uri, $output, $functionParams)->add();
         if ($routes->error()) {
             $this->error = $routes->error();
@@ -53,6 +56,7 @@ class BaseController
 
     public function delete(string $uri, \closure $output, ?array $functionParams = null): BaseController
     {
+        $uri = $this->baseUri . $uri;
         $routes = $this->routes->delete($uri, $output, $functionParams)->add();
         if ($routes->error()) {
             $this->error = $routes->error();
