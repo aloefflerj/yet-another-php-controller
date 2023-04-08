@@ -17,6 +17,19 @@ class RoutesTest extends TestCase
 {
     private ?WebServerHelper $server = null;
 
+    const MASCOTS_FIXTURE = [
+        [
+            "id" => 1,
+            "language" => "php",
+            "mascot" => "elephant"
+        ],
+        [
+            "id" => 2,
+            "language" => "go",
+            "mascot" => "gopher"
+        ]
+    ];
+
     protected function setUp(): void
     {
         $this->server = new WebServerHelper('localhost:9000', '', 'RoutesTest', 'routeProvider');
@@ -26,8 +39,15 @@ class RoutesTest extends TestCase
     public function testHomeRoute(): void
     {
         $client = $this->server->makeClient();
-        $response = $client->testRequest('GET', "");
+        $response = $client->testRequest('GET', '');
         $this->assertEquals('home', strval($response->getBody()));
+    }
+
+    public function testJsonReturnRoute(): void
+    {
+        $client = $this->server->makeClient();
+        $response = $client->testRequest('GET', 'mascots');
+        $this->assertEquals(json_encode(self::MASCOTS_FIXTURE), strval($response->getBody()));
     }
 
     public function routeProvider(): \closure
@@ -37,6 +57,10 @@ class RoutesTest extends TestCase
 
             $app->get('/', function ($req, $res, $headerParams, $functionParams) {
                 echo 'home';
+            });
+
+            $app->get('/mascots', function ($req, $res, $headerParams, $functionParams) {
+                echo json_encode(self::MASCOTS_FIXTURE);
             });
 
             $app->dispatch();
