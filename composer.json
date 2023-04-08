@@ -4,11 +4,13 @@
     "license": "mit",
     "autoload": {
         "psr-4": {
-            "Aloefflerj\\YetAnotherController\\": "src/"
+            "Aloefflerj\\YetAnotherController\\": "src/",
+            "Aloefflerj\\YetAnotherController\\Tests\\": "tests/"
         }
     },
     "scripts": {
-        "test": "./vendor/bin/phpunit"
+        "test": "./vendor/bin/phpunit",
+        "wait-for-it": "./vendor/bin/wait-for-it.sh"
     },
     "authors": [
         {
@@ -21,6 +23,8 @@
         "symfony/var-dumper": "^6.2"
     },
     "require": {
-        "psr/http-message": "^1.0"
+        "psr/http-message": "^1.0",
+        "guzzlehttp/guzzle": "^7.5",
+        "vishnubob/wait-for-it": "dev-master"
     }
 }
