@@ -10,6 +10,8 @@
     },
     "scripts": {
         "test": "./vendor/bin/phpunit",
+        "test:unit": "./vendor/bin/phpunit --testsuite unit",
+        "test:acceptance": "./vendor/bin/phpunit --testsuite acceptance",
         "wait-for-it": "./vendor/bin/wait-for-it.sh"
     },
     "authors": [
