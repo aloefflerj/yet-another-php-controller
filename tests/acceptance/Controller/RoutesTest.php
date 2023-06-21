@@ -46,7 +46,7 @@ class RoutesTest extends TestCase
         $this->assertEquals('home', strval($response->getBody()));
     }
 
-    public function testGetMascotsReturnsAListOfMascots(): void
+    public function testGetEntitiesReturnsAListOfEntities(): void
     {
         $response = $this->client->testRequest('GET', 'mascots');
         $this->assertEquals(json_encode(self::MASCOTS_FIXTURE), strval($response->getBody()));
@@ -62,7 +62,7 @@ class RoutesTest extends TestCase
         $this->assertEquals(json_encode($foundMascot), strval($response->getBody()));
     }
     
-    public function testNotFoundGetEntityByIdReturnsEmptyMascot(): void
+    public function testNotFoundGetEntityByIdReturnsEmpty(): void
     {
         $mascotId = 1000;
 
