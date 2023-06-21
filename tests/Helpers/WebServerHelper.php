@@ -8,15 +8,14 @@ use Aloefflerj\YetAnotherController\Tests\Helpers\TestClient;
 
 class WebServerHelper
 {
-    private $host;
-    private $entryPoint;
+    private ?int $localWebServerId = null;
 
-    private static $localWebServerId = null;
-
-    public function __construct(string $host, string $entryPoint, private string $testFileName, private $testMethod)
-    {
-        $this->host = $host;
-        $this->entryPoint = $entryPoint;
+    public function __construct(
+        private string $host,
+        private string $entryPoint,
+        private string $testFileName,
+        private $testMethod
+    ) {
     }
 
     public function startWebServer()
@@ -32,7 +31,7 @@ class WebServerHelper
 
     private function isRunning(): bool
     {
-        return isset(self::$localWebServerId);
+        return isset($this->localWebServerId);
     }
 
     private function launchWebServer(): void
@@ -45,7 +44,7 @@ class WebServerHelper
 
         $output = [];
         exec($command, $output);
-        self::$localWebServerId = (int) $output[0];
+        $this->localWebServerId = (int) $output[0];
     }
 
     private function waitUntilWebServerAcceptsRequests(): void
@@ -56,7 +55,7 @@ class WebServerHelper
     private function stopWebServerOnShutdown(): void
     {
         register_shutdown_function(function () {
-            exec('kill ' . self::$localWebServerId);
+            exec('kill ' . $this->localWebServerId);
         });
     }
 
