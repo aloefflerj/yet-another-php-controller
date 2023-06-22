@@ -13,6 +13,7 @@ class UrlHandler
     use StringHelper;
 
     public string $url;
+    private ?string $path;
 
     public function getPath()
     {
