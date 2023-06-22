@@ -272,6 +272,12 @@ class Uri implements UriInterface
             }
         }
 
+        if (!is_numeric($port))
+            throw new \Exception("Port: '{$port}' should be a numeric value");
+        
+        if (is_string($port))
+            $port = (int)$port;
+
         return $port;
     }
 
