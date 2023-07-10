@@ -5,7 +5,7 @@ namespace Aloefflerj\YetAnotherController\Controller\Http;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
 
-class Response extends Message #implements ResponseInterface
+class Response extends Message implements ResponseInterface
 {
     use StatusCodeToReason;
 
