@@ -5,14 +5,9 @@ declare(strict_types=1);
 namespace Aloefflerj\YetAnotherController;
 
 use Aloefflerj\YetAnotherController\Controller\BaseController;
-use Aloefflerj\YetAnotherController\Controller\Http\Message;
-use Aloefflerj\YetAnotherController\Controller\Http\Stream;
 use Aloefflerj\YetAnotherController\Tests\Helpers\TestClient;
 use Aloefflerj\YetAnotherController\Tests\Helpers\WebServerHelper;
-use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
-use Psr\Http\Message\MessageInterface;
-use Psr\Http\Message\StreamInterface;
 
 class RoutesTest extends TestCase
 {
