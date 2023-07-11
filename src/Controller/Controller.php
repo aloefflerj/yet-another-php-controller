@@ -5,12 +5,14 @@ namespace Aloefflerj\YetAnotherController\Controller;
 use Aloefflerj\YetAnotherController\Controller\Helpers\UrlHelper;
 use Aloefflerj\YetAnotherController\Controller\Http\Method;
 use Aloefflerj\YetAnotherController\Controller\Http\Request;
+use Aloefflerj\YetAnotherController\Controller\Http\Response;
 use Aloefflerj\YetAnotherController\Controller\Http\Stream;
 use Aloefflerj\YetAnotherController\Controller\Http\Uri;
 use Aloefflerj\YetAnotherController\Controller\Router\Route;
 use Aloefflerj\YetAnotherController\Controller\Router\Router;
 use Aloefflerj\YetAnotherController\Controller\Url\UrlHandler;
 use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
 
 class Controller
 {
@@ -53,8 +55,9 @@ class Controller
         $accessedRoute = $this->getMappedRoute();
 
         $request = $this->buildRequestFromRoute($accessedRoute);
+        $response = $this->buildResponse($accessedRoute);
 
-        $accessedRoute->getOutput()($request);
+        $accessedRoute->getOutput()($request, $response);
     }
 
     private function getMappedRoute(): Route
@@ -74,6 +77,17 @@ class Controller
             new Stream($stream),
             getallheaders(),
             $_SERVER['SERVER_PROTOCOL']
+        );
+    }
+
+    private function buildResponse(): ResponseInterface
+    {
+        return new Response(
+            http_response_code(),
+            [],
+            Stream::buildFromString(''),
+            $_SERVER['SERVER_PROTOCOL'],
+            ''
         );
     }
 
