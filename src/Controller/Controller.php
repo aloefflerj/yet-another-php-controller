@@ -52,6 +52,45 @@ class Controller
         $this->router->addRoute($newRoute);
     }
 
+    public function put(string $route, \closure $output, mixed $injectedParams = null): void
+    {
+        $uri = new Uri($this->baseUri . $route);
+        $newRoute = new Route(
+            $uri,
+            Method::PUT,
+            $output,
+            $injectedParams
+        );
+
+        $this->router->addRoute($newRoute);
+    }
+
+    public function patch(string $route, \closure $output, mixed $injectedParams = null): void
+    {
+        $uri = new Uri($this->baseUri . $route);
+        $newRoute = new Route(
+            $uri,
+            Method::PATCH,
+            $output,
+            $injectedParams
+        );
+
+        $this->router->addRoute($newRoute);
+    }
+
+    public function delete(string $route, \closure $output, mixed $injectedParams = null): void
+    {
+        $uri = new Uri($this->baseUri . $route);
+        $newRoute = new Route(
+            $uri,
+            Method::DELETE,
+            $output,
+            $injectedParams
+        );
+
+        $this->router->addRoute($newRoute);
+    }
+
     public function dispatch(): void
     {
         $accessedRoute = $this->getMappedRoute();
