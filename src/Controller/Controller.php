@@ -2,6 +2,8 @@
 
 namespace Aloefflerj\YetAnotherController\Controller;
 
+use Aloefflerj\YetAnotherController\Controller\Exceptions\MoreThanOneRouteWasFound;
+use Aloefflerj\YetAnotherController\Controller\Exceptions\RouteNotFound;
 use Aloefflerj\YetAnotherController\Controller\Helpers\UrlHelper;
 use Aloefflerj\YetAnotherController\Controller\Http\Method;
 use Aloefflerj\YetAnotherController\Controller\Http\Request;
@@ -57,14 +59,46 @@ class Controller
         $request = $this->buildRequestFromRoute($accessedRoute);
         $response = $this->buildResponse($accessedRoute);
 
-        $accessedRoute->getOutput()($request, $response);
+        $accessedRoute->getOutput()($request, $response, $accessedRoute->getParams());
     }
 
     private function getMappedRoute(): Route
     {
-        /** @var Route $accessedRoute */
-        $accessedRoute = $this->router->getRoutes()[$this->getAccessedMethod()->value][$this->getAccessedRoute()];
-        return $accessedRoute;
+        /** @var Route[] $routes */
+        $routes = $this->router->getRoutes()[$this->getAccessedMethod()->value];
+
+        $foundRoutes = [];
+        foreach ($routes as $routeNaming => $route) {
+            $regexRoute = $this->buildRegexRoute($routeNaming);
+            $url = $this->getAccessedRoute();
+
+            if (!preg_match($regexRoute, $url)) {
+                continue;
+            }
+
+            preg_match($regexRoute, $url, $matches);
+
+            $foundParams = array_filter(
+                $matches,
+                fn (string|int $key) => !is_int($key),
+                ARRAY_FILTER_USE_KEY
+            );
+
+            $route->setParams((object)$foundParams);
+            $foundRoutes[] = $route;
+        }
+
+        if (empty($foundRoutes)) {
+            throw new RouteNotFound($url);
+        }
+
+        if (count($foundRoutes) > 1) {
+            throw new MoreThanOneRouteWasFound($foundRoutes, $url);
+        }
+
+        $foundRoute = $foundRoutes[0];
+
+        return $foundRoute;
     }
 
     private function buildRequestFromRoute(Route $route): RequestInterface
@@ -103,5 +137,12 @@ class Controller
         $method = strtoupper($method);
 
         return Method::tryFrom($method);
+    }
+
+    private function buildRegexRoute(string $routeNaming): string
+    {
+        $regexRoute = preg_replace("/\{(.*?)\}/", '(?<$1>[^/]+?)', $routeNaming);
+
+        return "#^{$regexRoute}$#";
     }
 }

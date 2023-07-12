@@ -9,6 +9,8 @@ use Psr\Http\Message\UriInterface;
 
 class Route
 {
+    private \stdClass $params;
+
     public function __construct(
         private UriInterface $uri,
         private Method $method,
@@ -45,6 +47,16 @@ class Route
     public function setOutput($output): void
     {
         $this->output = $output;
+    }
+
+    public function getParams(): \stdClass
+    {
+        return $this->params ?? new \stdClass();
+    }
+
+    public function setParams(\stdClass $params): void
+    {
+        $this->params = $params;
     }
 
     public function getInjectedParams(): mixed
