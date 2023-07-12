@@ -1,0 +1,17 @@
+[
+  {
+    "id": 1,
+    "lang": "php",
+    "mascot": "elephant"
+  },
+  {
+    "id": 2,
+    "lang": "go",
+    "mascot": "gopher"
+  },
+  {
+    "id": 3,
+    "lang": "rust",
+    "mascot": "ferris the crab"
+  }
+]
