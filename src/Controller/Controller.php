@@ -3,6 +3,7 @@
 namespace Aloefflerj\YetAnotherController\Controller;
 
 use Aloefflerj\YetAnotherController\Controller\Exceptions\MoreThanOneRouteWasFound;
+use Aloefflerj\YetAnotherController\Controller\Exceptions\OutputReturnMustBeAStream;
 use Aloefflerj\YetAnotherController\Controller\Exceptions\RouteNotFound;
 use Aloefflerj\YetAnotherController\Controller\Helpers\UrlHelper;
 use Aloefflerj\YetAnotherController\Controller\Http\Method;
@@ -15,6 +16,7 @@ use Aloefflerj\YetAnotherController\Controller\Router\Router;
 use Aloefflerj\YetAnotherController\Controller\Url\UrlHandler;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\StreamInterface;
 
 class Controller
 {
@@ -98,7 +100,16 @@ class Controller
         $request = $this->buildRequestFromRoute($accessedRoute);
         $response = $this->buildResponse($accessedRoute);
 
-        $accessedRoute->getOutput()($request, $response, $accessedRoute->getParams());
+        $outputResult = $accessedRoute->getOutput()($request, $response, $accessedRoute->getParams());
+
+        if (is_null($outputResult))
+            return;
+
+        if (!is_a($outputResult, StreamInterface::class)) {
+            throw new OutputReturnMustBeAStream('Output closure must return an implementation of ' . StreamInterface::class);
+        }
+
+        echo $outputResult;
     }
 
     private function getMappedRoute(): Route
