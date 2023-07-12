@@ -18,7 +18,7 @@
     use Psr\Http\Message\RequestInterface;
     use Psr\Http\Message\ResponseInterface;
     
-    require_once dirname(__DIR__, 2) . '/vendor/autoload.php';
+    require_once '/vendor/autoload.php';
     
     $controller = new Controller('http://localhost:8000');
     ```
