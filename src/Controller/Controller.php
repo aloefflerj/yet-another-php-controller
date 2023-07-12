@@ -28,7 +28,7 @@ class Controller
     ) {
     }
 
-    public function get(string $route, \closure $output, mixed $injectedParams = null): void
+    public function get(string $route, \closure $output): void
     {
         $uri = new Uri($this->baseUri . $route);
         $newRoute = new Route(
@@ -40,7 +40,7 @@ class Controller
         $this->router->addRoute($newRoute);
     }
 
-    public function post(string $route, \closure $output, mixed $injectedParams = null): void
+    public function post(string $route, \closure $output): void
     {
         $uri = new Uri($this->baseUri . $route);
         $newRoute = new Route(
@@ -52,7 +52,7 @@ class Controller
         $this->router->addRoute($newRoute);
     }
 
-    public function put(string $route, \closure $output, mixed $injectedParams = null): void
+    public function put(string $route, \closure $output): void
     {
         $uri = new Uri($this->baseUri . $route);
         $newRoute = new Route(
@@ -64,7 +64,7 @@ class Controller
         $this->router->addRoute($newRoute);
     }
 
-    public function patch(string $route, \closure $output, mixed $injectedParams = null): void
+    public function patch(string $route, \closure $output): void
     {
         $uri = new Uri($this->baseUri . $route);
         $newRoute = new Route(
@@ -76,7 +76,7 @@ class Controller
         $this->router->addRoute($newRoute);
     }
 
-    public function delete(string $route, \closure $output, mixed $injectedParams = null): void
+    public function delete(string $route, \closure $output): void
     {
         $uri = new Uri($this->baseUri . $route);
         $newRoute = new Route(
