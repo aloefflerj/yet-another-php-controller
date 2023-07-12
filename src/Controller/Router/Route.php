@@ -14,8 +14,7 @@ class Route
     public function __construct(
         private UriInterface $uri,
         private Method $method,
-        private \closure $output,
-        private mixed $injectedParams
+        private \closure $output
     ) {
     }
 
@@ -57,15 +56,5 @@ class Route
     public function setParams(\stdClass $params): void
     {
         $this->params = $params;
-    }
-
-    public function getInjectedParams(): mixed
-    {
-        return $this->injectedParams;
-    }
-
-    public function setInjectedParams($injectedParams): void
-    {
-        $this->injectedParams = $injectedParams;
     }
 }

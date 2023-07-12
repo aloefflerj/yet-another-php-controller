@@ -34,8 +34,7 @@ class Controller
         $newRoute = new Route(
             $uri,
             Method::GET,
-            $output,
-            $injectedParams
+            $output
         );
 
         $this->router->addRoute($newRoute);
@@ -47,8 +46,7 @@ class Controller
         $newRoute = new Route(
             $uri,
             Method::POST,
-            $output,
-            $injectedParams
+            $output
         );
 
         $this->router->addRoute($newRoute);
@@ -60,8 +58,7 @@ class Controller
         $newRoute = new Route(
             $uri,
             Method::PUT,
-            $output,
-            $injectedParams
+            $output
         );
 
         $this->router->addRoute($newRoute);
@@ -73,8 +70,7 @@ class Controller
         $newRoute = new Route(
             $uri,
             Method::PATCH,
-            $output,
-            $injectedParams
+            $output
         );
 
         $this->router->addRoute($newRoute);
@@ -86,8 +82,7 @@ class Controller
         $newRoute = new Route(
             $uri,
             Method::DELETE,
-            $output,
-            $injectedParams
+            $output
         );
 
         $this->router->addRoute($newRoute);
