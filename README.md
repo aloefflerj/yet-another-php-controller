@@ -1,59 +1,136 @@
-# Yet Another PHP Controller 🐘🚦
+# Yet Another PHP Controller 
 ## Here is how it works (for now):
-1. Try the code below
-```php
-    $app = new BaseController();
-    $app->get('/', function ($req, $res, $headerParams, $functionParams) {
-        echo 'Welcome home';
+
+### Installation
+`composer require aloefflerj/yet-another-controller`
+
+### Quick Usage
+
+1. Simple Setup
+
+    > index.php
+    ```php
+    <?php
+    
+    declare(strict_types=1);
+    
+    use Aloefflerj\YetAnotherController\Controller\Controller;
+    use Psr\Http\Message\RequestInterface;
+    use Psr\Http\Message\ResponseInterface;
+    
+    require_once dirname(__DIR__, 2) . '/vendor/autoload.php';
+    
+    $controller = new Controller('http://localhost:8000');
+    ```
+
+2. Adding a simple **GET** route
+    > index.php
+    ```php
+    $controller->get('/', function (RequestInterface $request, ResponseInterface $response) {
+        $response->getBody()->write('Welcome home');
+        return $response->getBody();
     });
-    $app->dispatch();
-```
-2. Go to your domain home page (example: `localhost:8000/`)
-> outputs: 'Welcome home'
+    ```
+    
+3. Dispatching routes
+   > index.php
+   ```php
+    $controller->dispatch();
+   ```
+    
+4. Start your webserver
+
+    _A simple way to do it would be with the [PHP built-in web server](https://www.php.net/manual/en/features.commandline.webserver.php)_:
+   
+   Run `php -S localhost:8000 -t path/to/your/index`
+
+6. Go to your domain home page `http://localhost:8000/`
+    > outputs: 'Welcome home'
 
 ----------------------------------
 
-**You can pass header parameters...**
+### Request and Response
+
+The `$request` and `$response` arguments on `closure` _output_ are [PSR-7](https://www.php-fig.org/psr/psr-7/) implementations.
+
+The return of the `closure` must be a `StreamInterface` implementation for the output to work.
+
 ```php
-    $app->get('mascots/{mascot}', function ($req, $res, $headerParams, $functionParams) {
-        echo "PHP {$headerParams->mascot} mascot is awesome";
-    });
+$controller->get('/', function (RequestInterface $request, ResponseInterface $response) {
+    $response->getBody()->write('Welcome home');
+    return $response->getBody();
+});
+```
+
+Since the return of `$response->getBody()` is a `StreamInterface` implementation the code above will print:
+ > outputs: 'Welcome home'
+
+Alternatively you could simply do `echo $response->getBody();`
+
+----------------------------------
+
+### Uri Params Usage
+
+You can pass uri params wiht the syntax `/route/{param}`.
+
+For the `param` to be accessed, you need a third param on `get` method: `\stdClass $args`.
+
+To access it inside the `closure` _output_, you must use `$args->param`. See the example below:
+
+```php
+$controller->get('/mascots/{mascot}', function (RequestInterface $request, ResponseInterface $response, \stdClass $args) {
+    $response->getBody()->write("PHP {$args->mascot} mascot is awesome");
+    return $response->getBody();
+});
 ```
 url: `localhost:8000/mascots/elephant`
 > outputs: 'PHP elephant mascot is awesome'
 
-**And function params**
+----------------------------------
+
+### Getting the Request Body
+To get the body from a request you can access it from the `$request` implementation with `$request->getBody()` (_a `StreamInterface` implementation_).
+
+The example below will print the request body.
+
 ```php
-    $app->get('/mascots', function ($req, $res, $headerParams, $functionParams) {
-        echo "PHP {$functionParams->mascot} mascot is awesome";
-    }, ['mascot' => 'elephant']);
+$controller->put('/mascot', function (RequestInterface $request, ResponseInterface $response) {
+    $requestBody = $request->getBody();
+    return $requestBody;
+});
 ```
-url: `localhost:8000/mascots`
-> outputs: 'PHP elephant mascot is awesome'
---------------------------------------
-`$req` and `$res` are waiting for the implementation of psr7, you can just ignore them for now. So in order to get the body on `post`, `put` and `delete` verbs, you must do:
-```php
-    $app->post('/mascots', function ($req, $res, $body, $headerParams, $functionParams) {
-        print_r(json_decode($body));
-    });
-```
-Sending a body like this:
+If I request a **POST** with the following body:
 ```json
-    "mascots": [
-        {
-            "id": 1,
-            "language": "php",
-            "mascot": "elephant"
-        },
-        {
-            "id": 2,
-            "language": "go",
-            "mascot": "gopher"
-        }
-    ]
+{
+"mascots": [
+    {
+        "lang": "php",
+        "mascot": "elephant"
+    },
+    {
+        "lang": "go",
+        "mascot": "gopher"
+    }
+]
+}
 ```
-url: `localhost:8000/mascots`
-> outputs: stdClass Object ( [mascots] => Array ( [0] => stdClass Object ( [id] => 1 [language] => php [mascot] => elephant ) [1] => stdClass Object ( [id] => 2 [language] => go [mascot] => gopher ) ) )
+
+The return should be the same:
+```json
+{
+"mascots": [
+    {
+        "lang": "php",
+        "mascot": "elephant"
+    },
+    {
+        "lang": "go",
+        "mascot": "gopher"
+    }
+]
+}
+```
+
 ----------------------------------------
 
-###### Obs: the whole purpose of this repo is just for me to study and have fun. But you can try it if you want :v
+###### Obs: although you could try this controller out if you want, this project is just an excuse for me to study and have fun :v
