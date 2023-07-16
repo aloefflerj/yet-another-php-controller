@@ -9,7 +9,7 @@ use Aloefflerj\YetAnotherController\Tests\Helpers\TestClient;
 use Aloefflerj\YetAnotherController\Tests\Helpers\WebServerHelper;
 use PHPUnit\Framework\TestCase;
 
-class RoutesTest extends TestCase
+class OldControllerTest extends TestCase
 {
     private ?WebServerHelper $server = null;
     private TestClient $client;
@@ -29,7 +29,7 @@ class RoutesTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->server = new WebServerHelper('localhost:9000', '', 'RoutesTest', 'routeProvider');
+        $this->server = new WebServerHelper('localhost:9000', '', 'OldControllerTest', 'routeProvider');
         $this->server->startWebServer();
 
         $this->client = $this->server->makeClient();
@@ -68,7 +68,7 @@ class RoutesTest extends TestCase
     public function routeProvider(): \closure
     {
         return function () {
-            $app = new BaseController('/RoutesTest/routeProvider');
+            $app = new BaseController('/OldControllerTest/routeProvider');
 
             $app->get('/', function ($req, $res, $headerParams, $functionParams) {
                 echo 'home';
