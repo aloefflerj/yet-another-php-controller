@@ -55,7 +55,7 @@ class WebServerHelper
     private function stopWebServerOnShutdown(): void
     {
         register_shutdown_function(function () {
-            exec('kill ' . $this->localWebServerId);
+            exec('kill ' . $this->localWebServerId . '>/dev/null 2>&1');
         });
     }
 
