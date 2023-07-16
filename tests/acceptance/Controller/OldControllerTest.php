@@ -6,6 +6,7 @@ namespace Aloefflerj\YetAnotherController;
 
 use Aloefflerj\YetAnotherController\Controller\BaseController;
 use Aloefflerj\YetAnotherController\Tests\Helpers\TestClient;
+use Aloefflerj\YetAnotherController\Tests\Helpers\TestControllerBuilder;
 use Aloefflerj\YetAnotherController\Tests\Helpers\WebServerHelper;
 use PHPUnit\Framework\TestCase;
 
@@ -67,9 +68,10 @@ class OldControllerTest extends TestCase
 
     public function routeProvider(): \closure
     {
-        return function () {
-            $app = new BaseController('/OldControllerTest/routeProvider');
+        $testControllerBuilder = new TestControllerBuilder();
+        $app = $testControllerBuilder->buildOldController(__METHOD__);
 
+        return function () use ($app){
             $app->get('/', function ($req, $res, $headerParams, $functionParams) {
                 echo 'home';
             });
