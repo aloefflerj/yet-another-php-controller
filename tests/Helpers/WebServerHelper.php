@@ -18,6 +18,11 @@ class WebServerHelper
     ) {
     }
 
+    public function __destruct()
+    {
+        exec('kill ' . $this->localWebServerId . '>/dev/null 2>&1');
+    }
+
     public function startWebServer()
     {
         if ($this->isRunning()) {
