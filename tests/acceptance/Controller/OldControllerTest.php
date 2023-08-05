@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Aloefflerj\YetAnotherController;
 
-use Aloefflerj\YetAnotherController\Controller\BaseController;
 use Aloefflerj\YetAnotherController\Tests\Helpers\TestClient;
 use Aloefflerj\YetAnotherController\Tests\Helpers\TestControllerBuilder;
 use Aloefflerj\YetAnotherController\Tests\Helpers\WebServerHelper;
@@ -69,7 +68,7 @@ class OldControllerTest extends TestCase
     public function routeProvider(): \closure
     {
         $testControllerBuilder = new TestControllerBuilder();
-        $app = $testControllerBuilder->buildOldController(__METHOD__);
+        $app = $testControllerBuilder->buildOldControllerForTesting(__METHOD__);
 
         return function () use ($app){
             $app->get('/', function ($req, $res, $headerParams, $functionParams) {
@@ -93,5 +92,10 @@ class OldControllerTest extends TestCase
 
             $app->dispatch();
         };
+    }
+
+    protected function tearDown(): void
+    {
+        unset($this->server);
     }
 }
