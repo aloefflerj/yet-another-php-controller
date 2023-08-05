@@ -95,16 +95,17 @@ class Controller
         $request = $this->buildRequestFromRoute($accessedRoute);
         $response = $this->buildResponse($accessedRoute);
 
-        $outputResult = $accessedRoute->getOutput()($request, $response, $accessedRoute->getParams());
+        /** @var ResponseInterface $response */
+        $response = $accessedRoute->getOutput()($request, $response, $accessedRoute->getParams());
 
-        if (is_null($outputResult))
+        if (is_null($response))
             return;
 
-        if (!is_a($outputResult, StreamInterface::class)) {
-            throw new OutputReturnMustBeAStream('Output closure must return an implementation of ' . StreamInterface::class);
+        if (!is_a($response, ResponseInterface::class)) {
+            throw new OutputReturnMustBeAResponse('Output closure must return an implementation of ' . ResponseInterface::class);
         }
 
-        echo $outputResult;
+        echo $response->getBody();
     }
 
     private function getMappedRoute(): Route
