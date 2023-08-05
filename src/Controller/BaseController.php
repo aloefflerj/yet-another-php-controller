@@ -7,6 +7,7 @@ use Aloefflerj\YetAnotherController\Controller\Helpers\UrlHelper;
 use Aloefflerj\YetAnotherController\Controller\Routes\Routes;
 use Aloefflerj\YetAnotherController\Controller\Url\UrlHandler;
 
+/** @deprecated  */
 class BaseController
 // class BaseController implements ControllerInterface
 {
