@@ -17,7 +17,7 @@ $mascotsFixture = json_decode($mascotsFixture);
 
 $controller->get('/', function (RequestInterface $_, ResponseInterface $response) {
     $response->getBody()->write('Welcome home');
-    return $response->getBody();
+    return $response;
 });
 
 $controller->get(
@@ -29,7 +29,7 @@ $controller->get(
         $response->getBody()->write(
             json_encode($mascotsFixture, JSON_PRETTY_PRINT)
         );
-        return $response->getBody();
+        return $response;
     },
 );
 
@@ -71,7 +71,7 @@ $controller->post(
         $response->getBody()->write(
             json_encode([...$mascotsFixture, $requestBody], JSON_PRETTY_PRINT)
         );
-        return $response->getBody();
+        return $response;
     },
 );
 
@@ -102,7 +102,7 @@ $controller->put(
         $response->getBody()->write(
             json_encode($mascotsFixture, JSON_PRETTY_PRINT)
         );
-        return $response->getBody();
+        return $response;
     },
 );
 
