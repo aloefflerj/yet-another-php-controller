@@ -51,7 +51,7 @@ class SimpleRestControllerTest extends TestCase
 
             $controller->get('/', function (RequestInterface $_, ResponseInterface $response) {
                 $response->getBody()->write('Welcome home');
-                return $response->getBody();
+                return $response;
             });
 
             $controller->get(
@@ -63,7 +63,7 @@ class SimpleRestControllerTest extends TestCase
                     $response->getBody()->write(
                         json_encode($mascotsFixture, JSON_PRETTY_PRINT)
                     );
-                    return $response->getBody();
+                    return $response;
                 },
             );
 
@@ -81,7 +81,7 @@ class SimpleRestControllerTest extends TestCase
                         json_encode($foundMascot, JSON_PRETTY_PRINT)
                     );
 
-                    return $response->getBody();
+                    return $response;
                 },
             );
 
@@ -105,7 +105,7 @@ class SimpleRestControllerTest extends TestCase
                     $response->getBody()->write(
                         json_encode([...$mascotsFixture, $requestBody], JSON_PRETTY_PRINT)
                     );
-                    return $response->getBody();
+                    return $response;
                 },
             );
 
@@ -136,7 +136,7 @@ class SimpleRestControllerTest extends TestCase
                     $response->getBody()->write(
                         json_encode($mascotsFixture, JSON_PRETTY_PRINT)
                     );
-                    return $response->getBody();
+                    return $response;
                 },
             );
 
