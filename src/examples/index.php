@@ -3,8 +3,8 @@
 declare(strict_types=1);
 
 use Aloefflerj\YetAnotherController\Controller\Controller;
-use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 
 require_once dirname(__DIR__, 2) . '/vendor/autoload.php';
 
@@ -13,7 +13,7 @@ $controller = new Controller('http://localhost:8000');
 $mascotsFixture = file_get_contents('./mascots-fixture.json');
 $mascotsFixture = json_decode($mascotsFixture);
 
-$controller->get('/', function (RequestInterface $_, ResponseInterface $response) {
+$controller->get('/', function (ServerRequestInterface $_, ResponseInterface $response) {
     $response->getBody()->write('Welcome home');
     return $response;
 });
@@ -21,7 +21,7 @@ $controller->get('/', function (RequestInterface $_, ResponseInterface $response
 $controller->get(
     '/mascots',
     function (
-        RequestInterface $_,
+        ServerRequestInterface $_,
         ResponseInterface $response,
     ) use ($mascotsFixture) {
         $response->getBody()->write(
@@ -34,7 +34,7 @@ $controller->get(
 $controller->get(
     '/mascots/{id}',
     function (
-        RequestInterface $_,
+        ServerRequestInterface $_,
         ResponseInterface $response,
         \stdClass $args
     ) use ($mascotsFixture) {
@@ -62,12 +62,13 @@ $controller->get(
 $controller->post(
     '/mascots',
     function (
-        RequestInterface $request,
+        ServerRequestInterface $request,
         ResponseInterface $response,
     ) use ($mascotsFixture) {
         $requestBodyContent = $request->getBody()->getContents();
         $requestBody = json_decode($requestBodyContent);
 
+        $response = $response->withStatus(201);
         $response->getBody()->write(
             json_encode([...$mascotsFixture, $requestBody], JSON_PRETTY_PRINT)
         );
@@ -86,7 +87,7 @@ $controller->post(
 $controller->put(
     '/mascots/{id}',
     function (
-        RequestInterface $request,
+        ServerRequestInterface $request,
         ResponseInterface $response,
         \stdClass $args
     ) use ($mascotsFixture) {
