@@ -2,14 +2,12 @@
 
 namespace Aloefflerj\YetAnotherController\Controller;
 
-use Aloefflerj\YetAnotherController\Controller\Config\ControllerConfigSubitter;
-use Aloefflerj\YetAnotherController\Controller\Config\ControllerSetup;
+use Aloefflerj\YetAnotherController\Controller\Config\ControllerConfigManagerFactory;
 use Aloefflerj\YetAnotherController\Controller\Exceptions\MoreThanOneRouteWasFound;
 use Aloefflerj\YetAnotherController\Controller\Exceptions\OutputReturnMustBeAResponse;
 use Aloefflerj\YetAnotherController\Controller\Exceptions\RouteNotFound;
 use Aloefflerj\YetAnotherController\Controller\Helpers\UrlHelper;
 use Aloefflerj\YetAnotherController\Controller\Http\Method;
-use Aloefflerj\YetAnotherController\Controller\Http\Request;
 use Aloefflerj\YetAnotherController\Controller\Http\Response;
 use Aloefflerj\YetAnotherController\Controller\Http\ServerRequest;
 use Aloefflerj\YetAnotherController\Controller\Http\Stream;
@@ -28,7 +26,7 @@ class Controller
     public function __construct(
         private string $baseUri = '',
         private Router $router = new Router([]),
-        private ControllerSetup $setup = new ControllerSetup(),
+        private ControllerConfigManagerFactory $setupFactory = new ControllerConfigManagerFactory(),
         private StreamBuilder $streamBuilder = new StreamBuilder()
     ) {
     }
@@ -107,10 +105,13 @@ class Controller
             return;
 
         if (!is_a($response, ResponseInterface::class)) {
-            throw new OutputReturnMustBeAResponse('Output closure must return an implementation of ' . ResponseInterface::class);
+            throw new OutputReturnMustBeAResponse(
+                'Output closure must return an implementation of ' . ResponseInterface::class
+            );
         }
 
-        $this->setup->submitHeaders($response);
+        $responseConfigManager = $this->setupFactory->createResponseConfigManager($response);
+        $responseConfigManager->applyAllConfigurations();
 
         echo $response->getBody();
     }
