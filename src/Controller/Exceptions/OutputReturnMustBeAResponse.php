@@ -2,6 +2,6 @@
 
 namespace Aloefflerj\YetAnotherController\Controller\Exceptions;
 
-class OutputReturnMustBeAStream extends \Exception
+class OutputReturnMustBeAResponse extends \Exception
 {
 }

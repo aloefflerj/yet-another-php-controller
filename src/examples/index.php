@@ -8,8 +8,6 @@ use Psr\Http\Message\ResponseInterface;
 
 require_once dirname(__DIR__, 2) . '/vendor/autoload.php';
 
-header('Content-Type: application/json; charset=utf-8');
-
 $controller = new Controller('http://localhost:8000');
 
 $mascotsFixture = file_get_contents('./mascots-fixture.json');
@@ -41,13 +39,15 @@ $controller->get(
         \stdClass $args
     ) use ($mascotsFixture) {
 
+        $response = $response->withHeader('Content-Type', 'application/json');
+
         $foundMascot = array_column($mascotsFixture, null, 'id')[$args->id] ?? new \stdClass();
 
         $response->getBody()->write(
             json_encode($foundMascot, JSON_PRETTY_PRINT)
         );
 
-        return $response->getBody();
+        return $response;
     },
 );
 

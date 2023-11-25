@@ -2,21 +2,24 @@
 
 namespace Aloefflerj\YetAnotherController\Controller;
 
+use Aloefflerj\YetAnotherController\Controller\Config\ControllerConfigSubitter;
+use Aloefflerj\YetAnotherController\Controller\Config\ControllerSetup;
 use Aloefflerj\YetAnotherController\Controller\Exceptions\MoreThanOneRouteWasFound;
-use Aloefflerj\YetAnotherController\Controller\Exceptions\OutputReturnMustBeAStream;
+use Aloefflerj\YetAnotherController\Controller\Exceptions\OutputReturnMustBeAResponse;
 use Aloefflerj\YetAnotherController\Controller\Exceptions\RouteNotFound;
 use Aloefflerj\YetAnotherController\Controller\Helpers\UrlHelper;
 use Aloefflerj\YetAnotherController\Controller\Http\Method;
 use Aloefflerj\YetAnotherController\Controller\Http\Request;
 use Aloefflerj\YetAnotherController\Controller\Http\Response;
+use Aloefflerj\YetAnotherController\Controller\Http\ServerRequest;
 use Aloefflerj\YetAnotherController\Controller\Http\Stream;
+use Aloefflerj\YetAnotherController\Controller\Http\StreamBuilder;
 use Aloefflerj\YetAnotherController\Controller\Http\Uri;
 use Aloefflerj\YetAnotherController\Controller\Router\Route;
 use Aloefflerj\YetAnotherController\Controller\Router\Router;
 use Aloefflerj\YetAnotherController\Controller\Url\UrlHandler;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\StreamInterface;
 
 class Controller
 {
@@ -24,7 +27,9 @@ class Controller
 
     public function __construct(
         private string $baseUri = '',
-        private Router $router = new Router([])
+        private Router $router = new Router([]),
+        private ControllerSetup $setup = new ControllerSetup(),
+        private StreamBuilder $streamBuilder = new StreamBuilder()
     ) {
     }
 
@@ -105,6 +110,8 @@ class Controller
             throw new OutputReturnMustBeAResponse('Output closure must return an implementation of ' . ResponseInterface::class);
         }
 
+        $this->setup->submitHeaders($response);
+
         echo $response->getBody();
     }
 
@@ -149,12 +156,10 @@ class Controller
 
     private function buildRequestFromRoute(Route $route): RequestInterface
     {
-        $stream = fopen('php://input', 'r');
-
-        return new Request(
+        return new ServerRequest(
             $this->getAccessedMethod()?->value,
             $route->getUri(),
-            new Stream($stream),
+            $this->streamBuilder->buildStreamFromPHPInput(),
             getallheaders(),
             $_SERVER['SERVER_PROTOCOL']
         );
@@ -177,12 +182,12 @@ class Controller
         return $urlHandler->getPath();
     }
 
-    private function getAccessedMethod(): ?Method
+    private function getAccessedMethod(): Method
     {
         $method = $this->getRequestMethod();
         $method = strtoupper($method);
 
-        return Method::tryFrom($method);
+        return Method::try($method);
     }
 
     private function buildRegexRoute(string $routeNaming): string
