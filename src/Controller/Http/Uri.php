@@ -29,18 +29,14 @@ class Uri implements UriInterface
     {
         if (empty($uri)) {
             $this->completeUri = $uri;
-            $this->fillEmptyValues();
             return;
         }
 
-        $validUri = $this->assertUri($uri);
-
-        if (!$validUri) {
+        if (!$this->assertUri($uri)) {
             throw new \InvalidArgumentException("'$uri' is not a valid uri");
         }
 
         $this->completeUri = $uri;
-        $this->split();
     }
 
     public function __toString()
@@ -52,9 +48,14 @@ class Uri implements UriInterface
         return $this->glueElements();
     }
 
-    public function getScheme(): string
+    private function loadUriAttributes(): void
     {
-        return $this->scheme;
+        if (empty($this->completeUri)) {
+            $this->emptyAttributes();
+            return;
+        }
+
+        $this->splitUriToAttributes();
     }
 
     public function withScheme($scheme): self
@@ -145,49 +146,81 @@ class Uri implements UriInterface
         return $clone;
     }
 
+    public function getScheme(): string
+    {
+        if (!isset($this->scheme))
+            $this->loadUriAttributes();
+
+        return $this->scheme;
+    }
+
     public function getAuthority(): string
     {
+        if (!isset($this->authority))
+            $this->loadUriAttributes();
+
         return $this->authority;
     }
 
     public function getUserInfo(): string
     {
+        if (!isset($this->userInfo))
+            $this->loadUriAttributes();
+
         return $this->userInfo;
     }
 
     public function getHost(): string
     {
+        if (!isset($this->host))
+            $this->loadUriAttributes();
+
         return $this->host;
     }
 
     public function getPort(): ?int
     {
+        if (!isset($this->port))
+            $this->loadUriAttributes();
+
         return $this->port;
     }
 
     public function getPath(): string
     {
+        if (!isset($this->path))
+            $this->loadUriAttributes();
+
         return $this->path;
     }
 
     public function getQuery(): string
     {
+        if (!isset($this->query))
+            $this->loadUriAttributes();
+
         return $this->query;
     }
 
     public function getFragment(): string
     {
+        if (!isset($this->fragment))
+            $this->loadUriAttributes();
+
         return $this->fragment;
     }
 
     public function getCompleteUri(): string
     {
+        if (!isset($this->completeUri))
+            $this->loadUriAttributes();
+
         return $this->completeUri;
     }
 
     # HELPER FUNCTIONS #
 
-    private function fillEmptyValues(): void
+    private function emptyAttributes(): void
     {
         $this->scheme       = '';
         $this->authority    = '';
@@ -200,7 +233,7 @@ class Uri implements UriInterface
         $this->completeUri  = '';
     }
 
-    private function split(): void
+    private function splitUriToAttributes(): void
     {
         $this->scheme       = explode(':', $this->completeUri)[0];
         $this->authority    = $this->splitToAuthority();
