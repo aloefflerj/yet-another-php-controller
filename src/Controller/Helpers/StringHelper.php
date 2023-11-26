@@ -43,4 +43,12 @@ trait StringHelper
 
         return $same;
     }
+
+    public function getValueUpToTheCharacter(string $value, string $character): string
+    {
+        if (strpos($value, $character))
+            return explode($character, $value)[0];
+
+        return $value;
+    }
 }

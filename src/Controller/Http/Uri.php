@@ -2,12 +2,14 @@
 
 namespace Aloefflerj\YetAnotherController\Controller\Http;
 
+use Aloefflerj\YetAnotherController\Controller\Helpers\StringHelper;
 use Aloefflerj\YetAnotherController\Controller\Helpers\UriHelper;
 use Psr\Http\Message\UriInterface;
 
 class Uri implements UriInterface
 {
     use Schemes;
+    use StringHelper;
     use UriHelper;
 
     private string $completeUri;
@@ -223,6 +225,10 @@ class Uri implements UriInterface
             $authority .= ":" . $authorityArr[2];
         }
 
+        if (isset($authorityArr[3])) {
+            $authority .= ":" . $authorityArr[3];
+        }
+
         $authority = str_replace('//', '', $authority);
 
         if (strpos($authority, '/')) {
@@ -244,18 +250,17 @@ class Uri implements UriInterface
 
     private function splitToHost(): string
     {
-        $host = '';
         $authority = $this->authority;
         $host = $authority;
 
         if (strpos($authority, '@')) {
             $host = explode('@', $authority)[1];
-            return strtolower($host);
+            return strtolower(
+                $this->getValueUpToTheCharacter($host, ':')
+            );
         }
 
-        if (strpos($authority, ':')) {
-            $host = explode(':', $authority)[0];
-        }
+        $host = $this->getValueUpToTheCharacter($host, ':');
 
         return strtolower($host);
     }
@@ -265,11 +270,15 @@ class Uri implements UriInterface
         $port = null;
         $authority = $this->authority;
 
-        if (strpos($authority, ':') && !strpos($authority, '@')) {
-            $port = explode(':', $authority)[1];
-            if (strpos($port, '/')) {
-                $port = explode('/', $port)[0];
-            }
+        if (strpos($authority, ':')) {
+            $authorityArr = explode(':', $authority);
+            $port = end($authorityArr);
+            if (strpos($port, '@'))
+                $port = null;
+        }
+
+        if (strpos($port, '/')) {
+            $port = explode('/', $port)[0];
         }
 
         if (empty($port))
