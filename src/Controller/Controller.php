@@ -197,4 +197,9 @@ class Controller
 
         return "#^{$regexRoute}$#";
     }
+
+    public function setBaseUri(string $baseUri): void
+    {
+        $this->baseUri = $baseUri;
+    }
 }
